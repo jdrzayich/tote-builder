@@ -195,7 +195,7 @@ function BuilderApp() {
         wallHeightIn,
         autoCols: autoFit.cols,
         toteType,
-        orientation
+        orientation,
         qty: Number(qty) || 0,
         addons: Object.keys(addons).filter((k) => addons[k]),
       },
