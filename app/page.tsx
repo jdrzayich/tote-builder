@@ -149,7 +149,7 @@ type QuoteItem = {
 };
 
 function BuilderApp() {
-  const { push } = useToast();
+  const { toast } = useToast();
   const [step, setStep] = useState<"build" | "quote" | "request">("build");
 
   const [wallWidthIn, setWallWidthIn] = useState<number>(118);
@@ -197,7 +197,7 @@ function BuilderApp() {
       },
     };
     setQuoteItems((prev) => [item, ...prev]);
-    push({ title: "Added to quote", description: `${item.title} • Est. ${money(estTotal)}` });
+    toast({ title: "Added to quote", description: `${item.title} • Est. ${money(estTotal)}` });
     setStep("quote");
   }
 
@@ -207,11 +207,11 @@ function BuilderApp() {
 
   async function submitQuoteRequest() {
     if (!contact.first || !contact.last || !contact.email || !contact.phone || !contact.zip) {
-      push({ title: "Missing info", description: "Please add name, email, phone, and ZIP." });
+      toast({ title: "Missing info", description: "Please add name, email, phone, and ZIP." });
       return;
     }
     if (quoteItems.length === 0) {
-      push({ title: "No items", description: "Add at least one configuration to your quote." });
+      toast({ title: "No items", description: "Add at least one configuration to your quote." });
       return;
     }
 
@@ -240,9 +240,9 @@ function BuilderApp() {
         console.log("QUOTE_REQUEST_PAYLOAD", payload);
       }
 
-      push({ title: "Request sent", description: "We got it. We'll follow up with a custom quote." });
+      toast({ title: "Request sent", description: "We got it. We'll follow up with a custom quote." });
     } catch (e: any) {
-      push({ title: "Submit failed", description: e?.message || "Please try again." });
+      toast({ title: "Submit failed", description: e?.message || "Please try again." });
     } finally {
       setSubmitting(false);
     }
