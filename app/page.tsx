@@ -39,7 +39,7 @@ const PRICE_PER_BAY = 35; // <-- set your real $ per tote bay
 const ADDON_PRICES = {
   delivery: 75,      // flat per rack
   wheels: 75,        // flat per rack
-  totesPerBay: 18,   // per bay (this is the key change)
+  totesPerBay: 12,   // per bay (this is the key change)
 } as const;
 
 const TOTES = {
