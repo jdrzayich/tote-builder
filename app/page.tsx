@@ -28,13 +28,6 @@ import { clamp, money } from "@/components/ui/utils";
 
 const BRAND = { name: "Rack Your Garage", product: "Tote Storage Builder" };
 
-type Rack = { id: string; name: string; size: string; price: number; unitW: number };
-const RACKS: Rack[] = [
-  { id: "rack-4", name: "Overhead Tote Rack", size: "4 Tote", price: 399, unitW: 48 },
-  { id: "rack-6", name: "Overhead Tote Rack", size: "6 Tote", price: 499, unitW: 72 },
-  { id: "rack-8", name: "Overhead Tote Rack", size: "8 Tote", price: 599, unitW: 96 },
-];
-
 const ADDONS = [
   { id: "install", name: "Include Delivery" },
   { id: "remove", name: "Include Totes" },
@@ -254,24 +247,27 @@ function BuilderApp() {
   const quoteEstTotal = useMemo(() => quoteItems.reduce((a, b) => a + b.estTotal, 0), [quoteItems]);
 
   function addToQuote() {
-    const item: QuoteItem = {
-      id: tinyId(),
-      title: `${selected.name} — ${selected.size}`,
-      estTotal,
-      meta: {
-        wallWidthIn: autoFit.usable,
-        wallHeightIn,
-        autoCols: autoFit.cols,
-        toteType,
-        orientation,
-        qty: Number(qty) || 0,
-        addons: Object.keys(addons).filter((k) => addons[k]),
-      },
-    };
-    setQuoteItems((prev) => [item, ...prev]);
-    toast({ title: "Added to quote", description: `${item.title} • Est. ${money(estTotal)}` });
-    setStep("quote");
-  }
+  const item: QuoteItem = {
+    id: tinyId(),
+    title: `Tote rack — ${maxFit.cols} × ${maxFit.rows} bays`,
+    estTotal,
+    meta: {
+      wallWidthIn,
+      wallHeightIn,
+      toteType,
+      orientation,
+      qty: Number(qty) || 0,
+      cols: maxFit.cols,
+      rows: maxFit.rows,
+      totalBays: maxFit.cols * maxFit.rows,
+      addons: Object.keys(addons).filter((k) => addons[k]),
+    },
+  };
+
+  setQuoteItems((prev) => [item, ...prev]);
+  toast({ title: "Added to quote", description: `${item.title} • Est. ${money(estTotal)}` });
+  setStep("quote");
+}
 
   function removeItem(id: string) {
     setQuoteItems((prev) => prev.filter((x) => x.id !== id));
@@ -485,7 +481,9 @@ function BuilderApp() {
                           <Plus className="h-4 w-4" />
                         </Button>
                       </div>
-                      <div className="text-xs text-neutral-500">Unit width: {selected.unitW}\"</div>
+                      <div className="text-xs text-neutral-500">
+                        {maxFit.cols * maxFit.rows} bays × ${PRICE_PER_BAY} per bay
+                      </div>
                     </div>
 
                     <div className="space-y-2">
