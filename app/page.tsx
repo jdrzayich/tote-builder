@@ -154,6 +154,9 @@ function BuilderApp() {
 
   const [wallWidthIn, setWallWidthIn] = useState<number>(118);
   const [wallHeightIn, setWallHeightIn] = useState<number>(96);
+  
+  const [toteType, setToteType] = useState<"hdx27" | "custom">("hdx27");
+  
   const [rackId, setRackId] = useState<string>("rack-6");
   const [toteSize, setToteSize] = useState<"27" | "40" | "custom">("40");
   const [qty, setQty] = useState<number>(1);
