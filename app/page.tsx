@@ -492,10 +492,10 @@ function BuilderApp() {
 <div className="space-y-2">
   <Label>Price estimate</Label>
   <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-    <div className="text-xs text-neutral-500">
-      {totalBays} bays × ${PRICE_PER_BAY} per bay (hardware only)
-    </div>
-    <div className="text-lg font-semibold">{money(estTotal)}</div>
+  <div className="text-xs text-neutral-500">Estimated total</div>
+  <div className="text-lg font-semibold">{money(estTotal)}</div>
+  <div className="mt-1 text-xs text-neutral-500">
+    {maxFit.rows} totes tall × {maxFit.cols} totes wide
   </div>
 </div>
 
