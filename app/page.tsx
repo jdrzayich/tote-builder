@@ -392,6 +392,11 @@ function BuilderApp() {
                       <div className="text-xs text-neutral-500">
                         <div className="text-xs text-neutral-500">
                           Max fit suggests {maxFit.cols} across
+                          {sizeMode === "manual" ? (
+                            <div className="mt-1 text-xs text-neutral-500">
+                              Using manual size: {selectedCols} across
+                            </div>
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -481,9 +486,9 @@ function BuilderApp() {
                         </span>
                       ) : (
                         <>
-                          {maxFit.cols} totes wide by {maxFit.rows} totes tall
+                          {selectedCols} totes wide by {selectedRows} totes tall
                         </>
-                      )}
+)}
                   </div>
 
   {maxFit.cols === 0 || maxFit.rows === 0 ? null : (
@@ -534,7 +539,7 @@ function BuilderApp() {
     <div className="text-xs text-neutral-500">Estimated total</div>
     <div className="text-lg font-semibold">{money(estTotal)}</div>
     <div className="mt-1 text-xs text-neutral-500">
-      {maxFit.rows} totes tall × {maxFit.cols} totes wide
+      {selectedRows} totes tall × {selectedCols} totes wide
     </div>
   </div>
 </div>
@@ -542,7 +547,7 @@ function BuilderApp() {
 
                   <Separator />
 
-                    <Preview wallWidthIn={wallWidthIn} cols={maxFit.cols} />
+                    <Preview wallWidthIn={wallWidthIn} cols={selectedCols} />
 
                   <div className="sticky bottom-3">
                     <div className="rounded-3xl border border-neutral-200 bg-white/90 p-3 shadow-lg backdrop-blur">
