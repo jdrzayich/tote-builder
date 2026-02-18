@@ -29,11 +29,18 @@ import { clamp, money } from "@/components/ui/utils";
 const BRAND = { name: "Rack Your Garage", product: "Tote Storage Builder" };
 
 const ADDONS = [
-  { id: "install", name: "Include Delivery" },
-  { id: "remove", name: "Include Totes" },
+  { id: "delivery", name: "Include Delivery" },
+  { id: "totes", name: "Include Totes" },
+  { id: "wheels", name: "Include Wheels" },
 ];
 
 const PRICE_PER_BAY = 35; // <-- set your real $ per tote bay
+
+const ADDON_PRICES = {
+  delivery: 75,      // flat per rack
+  wheels: 75,        // flat per rack
+  totesPerBay: 18,   // per bay (this is the key change)
+} as const;
 
 const TOTES = {
   hdx27: {
@@ -185,9 +192,10 @@ function BuilderApp() {
   const [orientation, setOrientation] = useState<"standard" | "sideways">("standard");
   
   const [addons, setAddons] = useState<Record<string, boolean>>({
-    install: true,
-    remove: false,
-  });
+  delivery: true,  // default on/off — your choice
+  totes: false,
+  wheels: false,
+});
 
   const [contact, setContact] = useState({ first: "", last: "", email: "", phone: "", zip: "" });
   const [preferredDate, setPreferredDate] = useState<string>("");
@@ -237,10 +245,22 @@ function BuilderApp() {
 
   const totalBays = maxFit.cols * maxFit.rows;
 
-  const estTotal = useMemo(() => {
-  return totalBays * PRICE_PER_BAY;
-}, [totalBays]);
+  const addonTotal = useMemo(() => {
+  let total = 0;
 
+  if (addons.delivery) total += ADDON_PRICES.delivery;
+  if (addons.wheels) total += ADDON_PRICES.wheels;
+
+  // totes is priced per bay
+  if (addons.totes) total += totalBays * ADDON_PRICES.totesPerBay;
+
+  return total;
+}, [addons.delivery, addons.wheels, addons.totes, totalBays]);
+
+  const estTotal = useMemo(() => {
+  const base = totalBays * PRICE_PER_BAY;
+  return base + addonTotal;
+}, [totalBays, addonTotal]);
 
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
   const quoteEstTotal = useMemo(() => quoteItems.reduce((a, b) => a + b.estTotal, 0), [quoteItems]);
