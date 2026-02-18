@@ -189,7 +189,6 @@ function BuilderApp() {
   const [toteType, setToteType] = useState<"hdx27" | "custom">("hdx27");
   const [orientation, setOrientation] = useState<"standard" | "sideways">("standard");
   
-  const [rackId, setRackId] = useState<string>("rack-6");
   const [qty, setQty] = useState<number>(1);
   const [addons, setAddons] = useState<Record<string, boolean>>({
     install: true,
@@ -200,8 +199,6 @@ function BuilderApp() {
   const [preferredDate, setPreferredDate] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
-
-  const selected = useMemo(() => RACKS.find((c) => c.id === rackId) || RACKS[0], [rackId]);
 
   const autoFit = useMemo(() => {
     const unitW = selected.unitW;
@@ -254,7 +251,9 @@ function BuilderApp() {
 }, [wallWidthIn, wallHeightIn, toteType, orientation]);
 
 
-  const estTotal = useMemo(() => (Number(qty) || 0) * selected.price, [qty, selected.price]);
+  const estTotal = useMemo(() => (Number(qty) || 0) * maxFit.cols * maxFit.rows * pricePerTote
+, [qty, maxFit.cols * maxFit.rows * pricePerTote
+]);
 
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
   const quoteEstTotal = useMemo(() => quoteItems.reduce((a, b) => a + b.estTotal, 0), [quoteItems]);
@@ -476,22 +475,6 @@ function BuilderApp() {
 </div>
 
                   <Separator />
-
-
-                  <div className="space-y-2">
-                    <Label>Rack size</Label>
-                    <select
-                      className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-                      value={rackId}
-                      onChange={(e) => setRackId(e.target.value)}
-                    >
-                      {RACKS.map((c) => (
-                        <option key={c.id} value={c.id}>
-                          {c.name} — {c.size} (Est. {money(c.price)})
-                        </option>
-                      ))}
-                    </select>
-                  </div>
 
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-2">
