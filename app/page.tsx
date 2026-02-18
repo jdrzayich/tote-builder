@@ -365,8 +365,8 @@ function BuilderApp() {
             <StepShell key="build" title="Configure your tote storage" subtitle="Enter basic dimensions and pick a tote size." icon={LayoutGrid}>
               <Card>
                 <CardHeader>
-                  <CardTitle>Auto-fit wall</CardTitle>
-                  <CardDescription>Enter wall width and height; we’ll suggest how many totes fit.</CardDescription>
+                  <CardTitle>Wall Dimensions</CardTitle>
+                  <CardDescription>Enter the width and height of the area you would like your shelving and we’ll suggest how many totes fit.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
@@ -390,7 +390,6 @@ function BuilderApp() {
                     onChange={(e) => setWallHeightIn(Number(e.target.value))}
                      />
                     <div className="text-xs text-neutral-500">
-                      Used to confirm vertical clearance for rack layout.
                   </div>
               </div>
 
