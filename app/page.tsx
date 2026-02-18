@@ -378,18 +378,7 @@ function BuilderApp() {
 
                   </div>
 
-                  {/* MAX FIT RESULT */}
-                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-                  <div className="text-xs text-neutral-500">Max fit</div>
-                  <div className="text-sm font-semibold">
-                    {maxFit.cols} totes wide by {maxFit.rows} totes tall
-                  </div>
-                  <div className="mt-1 text-xs text-neutral-500">
-                    Based on {orientation === "standard" ? `${maxFit.toteW}" width (30" deep)` : `${maxFit.toteW}" width (20" deep)`}
-                  </div>
-              </div>
-
-                  <Separator />
+              
 
                   {/* NEW: Tote details section goes here */}
 <div className="space-y-2">
@@ -448,6 +437,35 @@ function BuilderApp() {
                       </button>
                     </div>
                   </div>
+
+                  <Separator />
+
+                     {/* MAX FIT RESULT */}
+                    <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
+                      <div className="text-xs text-neutral-500">Max fit</div>
+
+                      <div className="text-sm font-semibold">
+                      {maxFit.cols === 0 || maxFit.rows === 0 ? (
+                        <span className="text-red-600">
+                          Not enough space for this configuration.
+                        </span>
+                      ) : (
+                        <>
+                          {maxFit.cols} totes wide by {maxFit.rows} totes tall
+                        </>
+                      )}
+                  </div>
+
+  {maxFit.cols === 0 || maxFit.rows === 0 ? null : (
+    <div className="mt-1 text-xs text-neutral-500">
+      Based on{" "}
+      {orientation === "standard"
+        ? `${maxFit.toteW}" width (30" deep)`
+        : `${maxFit.toteW}" width (20" deep)`}{" "}
+      and {maxFit.toteH}" height
+    </div>
+  )}
+</div>
 
                   <Separator />
 
