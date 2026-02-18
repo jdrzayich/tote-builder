@@ -55,7 +55,7 @@ const TOTES = {
 
 // --- Rack structure assumptions (inches) ---
 // Tune these to match your actual rack design.
-const STRUCTURE = {
+ 
   const STRUCTURE = {
   postW: 1.5,        // vertical post/upright between columns
   outerSideW: 1.5,   // optional (not used yet)
