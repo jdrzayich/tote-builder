@@ -375,7 +375,7 @@ function BuilderApp() {
 
         <AnimatePresence mode="wait">
           {step === "build" && (
-            <StepShell key="build" title="Configure your tote storage" subtitle="Enter basic dimensions and pick a tote size." icon={LayoutGrid}>
+            <StepShell key="build" title="Configure Your Tote Storage" icon={LayoutGrid}>
               <Card>
                 <CardHeader>
                   <CardTitle>Wall Dimensions</CardTitle>
