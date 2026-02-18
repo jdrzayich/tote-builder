@@ -482,7 +482,7 @@ function BuilderApp() {
                         </Button>
                       </div>
                       <div className="text-xs text-neutral-500">
-                        {maxFit.cols * maxFit.rows} bays × ${PRICE_PER_BAY} per bay
+                        {maxFit.cols * maxFit.rows} totes × ${PRICE_PER_BAY} per tote
                       </div>
                     </div>
 
