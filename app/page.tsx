@@ -158,7 +158,6 @@ function BuilderApp() {
   const [toteType, setToteType] = useState<"hdx27" | "custom">("hdx27");
   
   const [rackId, setRackId] = useState<string>("rack-6");
-  const [toteSize, setToteSize] = useState<"27" | "40" | "custom">("40");
   const [qty, setQty] = useState<number>(1);
   const [addons, setAddons] = useState<Record<string, boolean>>({
     install: true,
@@ -196,7 +195,7 @@ function BuilderApp() {
         wallWidthIn: autoFit.usable,
         wallHeightIn,
         autoCols: autoFit.cols,
-        toteSize,
+        toteType,
         qty: Number(qty) || 0,
         addons: Object.keys(addons).filter((k) => addons[k]),
       },
@@ -323,15 +322,14 @@ function BuilderApp() {
   </div>
 
   <div className="space-y-2">
-    <Label>Tote size</Label>
-    <select
-      className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-      value={toteSize}
-      onChange={(e) => setToteSize(e.target.value as any)}
-    >
-      <option value="27">27-gallon totes</option>
-      <option value="40">40-gallon totes</option>
-      <option value="custom">Other / not sure</option>
+    <Label>Tote type</Label>
+<select
+  className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+  value={toteType}
+  onChange={(e) => setToteType(e.target.value as "hdx27" | "custom")}
+>
+  <option value="hdx27">HDX 27-gallon totes</option>
+  <option value="custom">Custom size / brand</option>
     </select>
   </div>
 </div>
