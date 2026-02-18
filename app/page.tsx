@@ -153,8 +153,9 @@ function BuilderApp() {
   const [step, setStep] = useState<"build" | "quote" | "request">("build");
 
   const [wallWidthIn, setWallWidthIn] = useState<number>(118);
-  const [toteSize, setToteSize] = useState<"27" | "40" | "custom">("27");
+  const [wallHeightIn, setWallHeightIn] = useState<number>(96);
   const [rackId, setRackId] = useState<string>("rack-6");
+  const [toteSize, setToteSize] = useState<"27" | "40" | "custom">("40");
   const [qty, setQty] = useState<number>(1);
   const [addons, setAddons] = useState<Record<string, boolean>>({
     install: true,
@@ -190,6 +191,7 @@ function BuilderApp() {
       estTotal,
       meta: {
         wallWidthIn: autoFit.usable,
+        wallHeightIn,
         autoCols: autoFit.cols,
         toteSize,
         qty: Number(qty) || 0,
@@ -276,11 +278,11 @@ function BuilderApp() {
 
         <AnimatePresence mode="wait">
           {step === "build" && (
-            <StepShell key="build" title="Configure your tote storage" subtitle="Enter basic dimensions and pick a rack size." icon={LayoutGrid}>
+            <StepShell key="build" title="Configure your tote storage" subtitle="Enter basic dimensions and pick a tote size." icon={LayoutGrid}>
               <Card>
                 <CardHeader>
                   <CardTitle>Auto-fit wall</CardTitle>
-                  <CardDescription>Enter wall width; we’ll suggest how many sections fit.</CardDescription>
+                  <CardDescription>Enter wall width and height; we’ll suggest how many totes fit.</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid grid-cols-2 gap-3">
@@ -294,22 +296,44 @@ function BuilderApp() {
                         Suggests {autoFit.cols} across • uses {autoFit.used}\" • remainder {Math.max(0, Math.round(autoFit.rem))}\"
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <Label>Tote size</Label>
-                      <select
-                        className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
-                        value={toteSize}
-                        onChange={(e) => setToteSize(e.target.value as any)}
-                      >
-                        <option value="27">27-gallon totes</option>
-                        <option value="40">40-gallon totes</option>
-                        <option value="custom">Other / not sure</option>
-                      </select>
-                      <div className="text-xs text-neutral-500">Helps us validate spacing (manual quote).</div>
-                    </div>
+                   <div className="space-y-2">
+                    <Label>Wall height (in)</Label>
+                    <Input
+                    type="number"
+                    value={wallHeightIn}
+                    onChange={(e) => setWallHeightIn(Number(e.target.value))}
+                     />
+                    <div className="text-xs text-neutral-500">
+                      Used to confirm vertical clearance for rack layout.
+                  </div>
+              </div>
+
                   </div>
 
                   <Separator />
+
+                  {/* NEW: Tote details section goes here */}
+<div className="space-y-2">
+  <div className="text-sm font-semibold">Tote details</div>
+  <div className="text-sm text-neutral-600">
+    Helps us validate spacing for your quote.
+  </div>
+
+  <div className="space-y-2">
+    <Label>Tote size</Label>
+    <select
+      className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+      value={toteSize}
+      onChange={(e) => setToteSize(e.target.value as any)}
+    >
+      <option value="27">27-gallon totes</option>
+      <option value="40">40-gallon totes</option>
+      <option value="custom">Other / not sure</option>
+    </select>
+  </div>
+</div>
+                  <Separator />
+
 
                   <div className="space-y-2">
                     <Label>Rack size</Label>
@@ -412,7 +436,7 @@ function BuilderApp() {
                         <div className="min-w-0">
                           <div className="font-semibold leading-tight">{it.title}</div>
                           <div className="mt-1 text-xs text-neutral-500">
-                            {it.meta.wallWidthIn}\" wall • {it.meta.autoCols} across • qty {it.meta.qty} • tote{" "}
+                            {it.meta.wallWidthIn}" wide • {it.meta.wallHeightIn}" high • {it.meta.autoCols} across • qty {it.meta.qty} • tote{" "}
                             {it.meta.toteSize === "custom" ? "other" : `${it.meta.toteSize}-gal`}
                           </div>
                           <div className="mt-2 flex flex-wrap gap-2">
