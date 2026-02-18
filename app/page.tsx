@@ -242,7 +242,15 @@ function BuilderApp() {
     if (neededH <= usableH) bestRows = rows;
   }
 
-  return { cols: bestCols, rows: bestRows, toteW, toteH };
+ // HARD CAP: 8' vertical framing limit
+  const MAX_ROWS = 5;
+
+  return {
+    cols: bestCols,
+    rows: Math.min(bestRows, MAX_ROWS),
+    toteW,
+    toteH,
+  };
 }, [wallWidthIn, wallHeightIn, toteType, orientation]);
 
 
