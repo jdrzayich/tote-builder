@@ -442,7 +442,7 @@ function BuilderApp() {
 
                      {/* MAX FIT RESULT */}
                     <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-                      <div className="text-xs text-neutral-500">Max fit</div>
+                      <div className="text-xs text-neutral-500">Maximun Tote Capacity</div>
 
                       <div className="text-sm font-semibold">
                       {maxFit.cols === 0 || maxFit.rows === 0 ? (
