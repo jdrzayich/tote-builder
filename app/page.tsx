@@ -492,30 +492,14 @@ function BuilderApp() {
 <div className="space-y-2">
   <Label>Price estimate</Label>
   <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-  <div className="text-xs text-neutral-500">Estimated total</div>
-  <div className="text-lg font-semibold">{money(estTotal)}</div>
-  <div className="mt-1 text-xs text-neutral-500">
-    {maxFit.rows} totes tall × {maxFit.cols} totes wide
+    <div className="text-xs text-neutral-500">Estimated total</div>
+    <div className="text-lg font-semibold">{money(estTotal)}</div>
+    <div className="mt-1 text-xs text-neutral-500">
+      {maxFit.rows} totes tall × {maxFit.cols} totes wide
+    </div>
   </div>
 </div>
 
-
-                  <Separator />
-
-                  <div className="space-y-2">
-                    <Label>Options (for your quote)</Label>
-                    <div className="space-y-2">
-                      {ADDONS.map((a) => (
-                        <div key={a.id} className="flex items-center justify-between rounded-2xl border border-neutral-200 p-3">
-                          <div className="flex items-center gap-2">
-                            <Checkbox checked={!!addons[a.id]} onChange={(v) => setAddons((prev) => ({ ...prev, [a.id]: v }))} />
-                            <div className="text-sm">{a.name}</div>
-                          </div>
-                          <div className="text-xs text-neutral-500">priced in final quote</div>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
 
                   <Separator />
 
