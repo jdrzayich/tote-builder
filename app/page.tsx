@@ -504,6 +504,87 @@ function BuilderApp() {
 
                   <Separator />
 
+                  {/* SIZE MODE: Max vs Manual */}
+<div className="space-y-2">
+  <div className="text-sm font-semibold">Rack size</div>
+  <div className="text-sm text-neutral-600">
+    Choose max capacity, or set a smaller rack size.
+  </div>
+
+  <div className="grid grid-cols-2 gap-2">
+    <button
+      type="button"
+      onClick={() => setSizeMode("max")}
+      className={`rounded-2xl border p-3 text-left ${
+        sizeMode === "max"
+          ? "border-emerald-600 bg-emerald-50"
+          : "border-neutral-200 bg-white"
+      }`}
+    >
+      <div className="text-sm font-semibold">Max fit</div>
+      <div className="text-xs text-neutral-600">
+        {maxFit.cols} wide × {maxFit.rows} tall
+      </div>
+    </button>
+
+    <button
+      type="button"
+      onClick={() => setSizeMode("manual")}
+      className={`rounded-2xl border p-3 text-left ${
+        sizeMode === "manual"
+          ? "border-emerald-600 bg-emerald-50"
+          : "border-neutral-200 bg-white"
+      }`}
+    >
+      <div className="text-sm font-semibold">Manual</div>
+      <div className="text-xs text-neutral-600">
+        Pick your size
+      </div>
+    </button>
+  </div>
+
+  {sizeMode === "manual" && (
+    <div className="grid grid-cols-2 gap-3">
+      <div className="space-y-2">
+        <Label>Totes wide</Label>
+        <Input
+          type="number"
+          value={manualCols}
+          min={1}
+          max={maxFit.cols || 1}
+          onChange={(e) => setManualCols(Number(e.target.value))}
+        />
+        <div className="text-xs text-neutral-500">
+          Max: {maxFit.cols}
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Totes tall</Label>
+        <Input
+          type="number"
+          value={manualRows}
+          min={1}
+          max={maxFit.rows || 1}
+          onChange={(e) => setManualRows(Number(e.target.value))}
+        />
+        <div className="text-xs text-neutral-500">
+          Max: {maxFit.rows}
+        </div>
+      </div>
+    </div>
+  )}
+
+  {maxFit.cols > 0 && maxFit.rows > 0 ? (
+    <div className="text-xs text-neutral-500">
+      Selected: {selectedCols} wide × {selectedRows} tall ({totalBays} bays)
+    </div>
+  ) : null}
+</div>
+
+<Separator />
+
+
                  {/* OPTIONS */}
 <div className="space-y-2">
   <Label>Options (for your quote)</Label>
