@@ -40,34 +40,31 @@ const ADDONS = [
   { id: "remove", name: "Include Totes" },
 ];
 
-// --- Tote sizing assumptions (inches) ---
-// Adjust these to match the actual HDX 27 gal tote dimensions you want to use.
-const TOTE_SPECS = {
+const TOTES = {
   hdx27: {
-    w: 20, // left-to-right width of one tote
-    h: 15, // height of one tote
-    d_standard: 30, // depth when oriented "standard"
-    d_sideways: 20, // depth when oriented "sideways"
+    wStandard: 19.6, // along the wall when tote is "standard"
+    wSideways: 28.5, // along the wall when tote is "sideways"
+    h: 15.2,         // tote height
   },
-};
+  custom: {
+    wStandard: 19.6,
+    wSideways: 28.5,
+    h: 15.2,
+  },
+} as const;
 
 // --- Rack structure assumptions (inches) ---
 // Tune these to match your actual rack design.
-const RACK_STRUCT = {
-  // vertical uprights BETWEEN tote bays (the posts you see between columns)
-  uprightW: 1.5,
-  // left + right outer frame thickness (outside vertical rails)
-  outerSideW: 1.5,
-  // horizontal shelf / rail thickness between tote rows
+const STRUCTURE = {
+  const STRUCTURE = {
+  postW: 1.5,        // vertical post/upright between columns
+  outerSideW: 1.5,   // optional (not used yet)
   shelfH: 1.5,
-  // top + bottom outer frame thickness
-  outerTopH: 1.5,
-  outerBottomH: 1.5,
-  // breathing room around each tote (so it’s not jammed)
-  gapW: 1, // gap between tote and uprights/sides
-  gapH: 2, // gap between tote and shelf rails
-};
-
+  outerTopH: 1.5,    // optional (not used yet)
+  outerBottomH: 1.5, // optional (not used yet)
+  gapW: 1,
+  gapH: 2,
+} as const;
 
 const CLEARANCE = {
   w: 1, // extra inches per tote horizontally
@@ -215,42 +212,38 @@ function BuilderApp() {
     return { usable, cols, used, rem };
   }, [wallWidthIn, selected.unitW]);
 
-    const maxFit = useMemo(() => {
-    // Use HDX dims for now; if toteType is custom, you can fall back to conservative defaults.
-    const tote = TOTE_SPECS.hdx27;
+  const maxFit = useMemo(() => {
+  const tote = toteType === "custom" ? TOTES.custom : TOTES.hdx27;
 
-    const usableW = clamp(Number(wallWidthIn) || 0, 24, 360);
-    const usableH = clamp(Number(wallHeightIn) || 0, 24, 360);
+  // orientation changes the tote width-along-wall
+  const toteW = orientation === "standard" ? tote.wStandard : tote.wSideways;
+  const toteH = tote.h;
 
-    // Per-tote bay sizing including the “gap” around a tote
-    const bayW = tote.w + RACK_STRUCT.gapW * 2;
-    const bayH = tote.h + RACK_STRUCT.gapH * 2;
+  const usableW = clamp(Number(wallWidthIn) || 0, 24, 360);
+  const usableH = clamp(Number(wallHeightIn) || 0, 24, 180); // tune max as you want
 
-    // Total width model:
-    // outer sides + (cols * bayW) + (cols - 1) * uprightW
-    const maxCols =
-      usableW < (RACK_STRUCT.outerSideW * 2 + bayW)
-        ? 0
-        : Math.floor(
-            (usableW - (RACK_STRUCT.outerSideW * 2) + RACK_STRUCT.uprightW) /
-              (bayW + RACK_STRUCT.uprightW)
-          );
+  // Per-tote "cell" size including structure + gaps
+  // Width: tote + gap + (structure share)
+  // If you have posts between each tote column, you can model like:
+  // cols * toteW + (cols-1)*gapW + (cols+1)*postW <= usableW
+  // We'll compute cols by brute force so it's accurate and simple.
 
-    // Total height model:
-    // outer top/bottom + (rows * bayH) + (rows - 1) * shelfH
-    const maxRows =
-      usableH < (RACK_STRUCT.outerTopH + RACK_STRUCT.outerBottomH + bayH)
-        ? 0
-        : Math.floor(
-            (usableH - (RACK_STRUCT.outerTopH + RACK_STRUCT.outerBottomH) + RACK_STRUCT.shelfH) /
-              (bayH + RACK_STRUCT.shelfH)
-          );
+  let bestCols = 0;
+  for (let cols = 1; cols <= 20; cols++) {
+    const neededW = cols * toteW + (cols - 1) * STRUCTURE.gapW + (cols + 1) * STRUCTURE.postW;
+    if (neededW <= usableW) bestCols = cols;
+  }
 
-    return {
-      cols: clamp(maxCols, 0, 99),
-      rows: clamp(maxRows, 0, 99),
-    };
-  }, [wallWidthIn, wallHeightIn]);
+  // Height: rows * toteH + rows*shelfH + (rows+1)*gapH <= usableH
+  // (gapH as top/bottom clearance between tote and rails)
+  let bestRows = 0;
+  for (let rows = 1; rows <= 20; rows++) {
+    const neededH = rows * toteH + rows * STRUCTURE.shelfH + (rows + 1) * STRUCTURE.gapH;
+    if (neededH <= usableH) bestRows = rows;
+  }
+
+  return { cols: bestCols, rows: bestRows, toteW, toteH };
+}, [wallWidthIn, wallHeightIn, toteType, orientation]);
 
 
   const estTotal = useMemo(() => (Number(qty) || 0) * selected.price, [qty, selected.price]);
@@ -390,6 +383,9 @@ function BuilderApp() {
                   <div className="text-xs text-neutral-500">Max fit</div>
                   <div className="text-sm font-semibold">
                     {maxFit.cols} totes wide by {maxFit.rows} totes tall
+                  </div>
+                  <div className="mt-1 text-xs text-neutral-500">
+                    Based on {orientation === "standard" ? `${maxFit.toteW}" width (30" deep)` : `${maxFit.toteW}" width (20" deep)`}
                   </div>
               </div>
 
