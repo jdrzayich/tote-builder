@@ -500,7 +500,14 @@ function BuilderApp() {
           />
           <div className="text-sm">{a.name}</div>
         </div>
-        <div className="text-xs text-neutral-500">priced in final quote</div>
+        {a.id === "totes" ? (
+          <div className="text-xs text-neutral-500">
+            {totalBays} totes × ${ADDON_PRICES.totesPerBay}
+          </div>
+) : (
+  <div className="text-xs text-neutral-500">flat add-on</div>
+)}
+
       </div>
     ))}
   </div>
@@ -529,7 +536,7 @@ function BuilderApp() {
                     <div className="rounded-3xl border border-neutral-200 bg-white/90 p-3 shadow-lg backdrop-blur">
                       <div className="flex items-center justify-between">
                         <div>
-                          <div className="text-xs text-neutral-500">Estimated hardware total</div>
+                          <div className="text-xs text-neutral-500">Estimated Total</div>
                           <div className="text-lg font-semibold">{money(estTotal)}</div>
                         </div>
                         <Button onClick={addToQuote}>
