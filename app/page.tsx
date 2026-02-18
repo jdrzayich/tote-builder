@@ -34,6 +34,7 @@ const ADDONS = [
   { id: "wheels", name: "Include Wheels" },
 ];
 
+
 const PRICE_PER_BAY = 35; // <-- set your real $ per tote bay
 
 const ADDON_PRICES = {
@@ -185,6 +186,10 @@ function BuilderApp() {
   const { toast } = useToast();
   const [step, setStep] = useState<"build" | "quote" | "request">("build");
 
+  const [sizeMode, setSizeMode] = useState<"max" | "manual">("max");
+  const [manualCols, setManualCols] = useState(1);
+  const [manualRows, setManualRows] = useState(1);
+
   const [wallWidthIn, setWallWidthIn] = useState<number>(118);
   const [wallHeightIn, setWallHeightIn] = useState<number>(96);
   
@@ -243,7 +248,13 @@ function BuilderApp() {
   };
 }, [wallWidthIn, wallHeightIn, toteType, orientation]);
 
-  const totalBays = maxFit.cols * maxFit.rows;
+  const selectedCols =
+  sizeMode === "manual" ? clamp(manualCols, 1, maxFit.cols || 1) : maxFit.cols;
+
+  const selectedRows =
+  sizeMode === "manual" ? clamp(manualRows, 1, maxFit.rows || 1) : maxFit.rows;
+
+  const totalBays = selectedCols * selectedRows;
 
   const addonTotal = useMemo(() => {
   let total = 0;
@@ -262,22 +273,24 @@ function BuilderApp() {
   return base + addonTotal;
 }, [totalBays, addonTotal]);
 
+  
+
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
   const quoteEstTotal = useMemo(() => quoteItems.reduce((a, b) => a + b.estTotal, 0), [quoteItems]);
 
   function addToQuote() {
   const item: QuoteItem = {
     id: tinyId(),
-    title: `Tote rack — ${maxFit.cols} × ${maxFit.rows} bays`,
+    title: `Tote rack — ${selectedCols} × ${selectedRows} bays`,
     estTotal,
     meta: {
       wallWidthIn,
       wallHeightIn,
       toteType,
       orientation,
-      cols: maxFit.cols,
-      rows: maxFit.rows,
-      totalBays: maxFit.cols * maxFit.rows,
+      cols: selectedCols,
+      rows: selectedRows,
+      totalBays,
       addons: Object.keys(addons).filter((k) => addons[k]),
     },
   };
