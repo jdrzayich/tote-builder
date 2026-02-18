@@ -200,15 +200,6 @@ function BuilderApp() {
   const [notes, setNotes] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
-  const autoFit = useMemo(() => {
-    const unitW = selected.unitW;
-    const usable = clamp(Number(wallWidthIn) || 0, 24, 360);
-    const cols = clamp(Math.floor(usable / unitW), 1, 10);
-    const used = cols * unitW;
-    const rem = usable - used;
-    return { usable, cols, used, rem };
-  }, [wallWidthIn, selected.unitW]);
-
   const maxFit = useMemo(() => {
   const tote = toteType === "custom" ? TOTES.custom : TOTES.hdx27;
 
@@ -368,7 +359,9 @@ function BuilderApp() {
                         <Input className="pl-9" value={wallWidthIn} onChange={(e) => setWallWidthIn(Number(e.target.value))} inputMode="numeric" />
                       </div>
                       <div className="text-xs text-neutral-500">
-                        Suggests {autoFit.cols} across • uses {autoFit.used}\" • remainder {Math.max(0, Math.round(autoFit.rem))}\"
+                        <div className="text-xs text-neutral-500">
+                          Max fit suggests {maxFit.cols} across
+                        </div>
                       </div>
                     </div>
                    <div className="space-y-2">
@@ -519,7 +512,7 @@ function BuilderApp() {
 
                   <Separator />
 
-                  <Preview wallWidthIn={autoFit.usable} cols={autoFit.cols} />
+                    <Preview wallWidthIn={wallWidthIn} cols={maxFit.cols} />
 
                   <div className="sticky bottom-3">
                     <div className="rounded-3xl border border-neutral-200 bg-white/90 p-3 shadow-lg backdrop-blur">
