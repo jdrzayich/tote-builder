@@ -36,9 +36,8 @@ const RACKS: Rack[] = [
 ];
 
 const ADDONS = [
-  { id: "install", name: "Installation" },
-  { id: "remove", name: "Haul-away / Removal" },
-  { id: "lighting", name: "Lighting considerations" },
+  { id: "install", name: "Include Delivery" },
+  { id: "remove", name: "Include Totes" },
 ];
 
 function tinyId() {
