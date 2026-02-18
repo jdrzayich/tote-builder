@@ -184,7 +184,6 @@ function BuilderApp() {
   const [toteType, setToteType] = useState<"hdx27" | "custom">("hdx27");
   const [orientation, setOrientation] = useState<"standard" | "sideways">("standard");
   
-  const [qty, setQty] = useState<number>(1);
   const [addons, setAddons] = useState<Record<string, boolean>>({
     install: true,
     remove: false,
@@ -239,8 +238,8 @@ function BuilderApp() {
   const totalBays = maxFit.cols * maxFit.rows;
 
   const estTotal = useMemo(() => {
-  return (Number(qty) || 0) * totalBays * PRICE_PER_BAY;
-}, [qty, totalBays]);
+  return totalBays * PRICE_PER_BAY;
+}, [totalBays]);
 
 
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
@@ -256,7 +255,6 @@ function BuilderApp() {
       wallHeightIn,
       toteType,
       orientation,
-      qty: Number(qty) || 0,
       cols: maxFit.cols,
       rows: maxFit.rows,
       totalBays: maxFit.cols * maxFit.rows,
@@ -442,7 +440,7 @@ function BuilderApp() {
 
                      {/* MAX FIT RESULT */}
                     <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-                      <div className="text-xs text-neutral-500">Maximun Tote Capacity</div>
+                      <div className="text-xs text-neutral-500">Maximum Tote Capacity</div>
 
                       <div className="text-sm font-semibold">
                       {maxFit.cols === 0 || maxFit.rows === 0 ? (
@@ -469,31 +467,38 @@ function BuilderApp() {
 
                   <Separator />
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <div className="space-y-2">
-                      <Label>Quantity</Label>
-                      <div className="flex items-center gap-2">
-                        <Button type="button" variant="outline" size="icon" onClick={() => setQty((q) => clamp((Number(q) || 0) - 1, 1, 99))}>
-                          <Minus className="h-4 w-4" />
-                        </Button>
-                        <Input value={qty} onChange={(e) => setQty(Number(e.target.value))} inputMode="numeric" className="text-center" />
-                        <Button type="button" variant="outline" size="icon" onClick={() => setQty((q) => clamp((Number(q) || 0) + 1, 1, 99))}>
-                          <Plus className="h-4 w-4" />
-                        </Button>
-                      </div>
-                      <div className="text-xs text-neutral-500">
-                        {maxFit.cols * maxFit.rows} totes × ${PRICE_PER_BAY} per tote
-                      </div>
-                    </div>
+                 {/* OPTIONS */}
+<div className="space-y-2">
+  <Label>Options (for your quote)</Label>
+  <div className="space-y-2">
+    {ADDONS.map((a) => (
+      <div key={a.id} className="flex items-center justify-between rounded-2xl border border-neutral-200 p-3">
+        <div className="flex items-center gap-2">
+          <Checkbox
+            checked={!!addons[a.id]}
+            onChange={(v) => setAddons((prev) => ({ ...prev, [a.id]: v }))}
+          />
+          <div className="text-sm">{a.name}</div>
+        </div>
+        <div className="text-xs text-neutral-500">priced in final quote</div>
+      </div>
+    ))}
+  </div>
+</div>
 
-                    <div className="space-y-2">
-                      <Label>Estimated</Label>
-                      <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
-                        <div className="text-xs text-neutral-500">Rack estimate (hardware only)</div>
-                        <div className="text-lg font-semibold">{money(estTotal)}</div>
-                      </div>
-                    </div>
-                  </div>
+<Separator />
+
+{/* PRICE ESTIMATE (LAST) */}
+<div className="space-y-2">
+  <Label>Price estimate</Label>
+  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
+    <div className="text-xs text-neutral-500">
+      {totalBays} bays × ${PRICE_PER_BAY} per bay (hardware only)
+    </div>
+    <div className="text-lg font-semibold">{money(estTotal)}</div>
+  </div>
+</div>
+
 
                   <Separator />
 
