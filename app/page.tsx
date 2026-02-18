@@ -40,6 +40,41 @@ const ADDONS = [
   { id: "remove", name: "Include Totes" },
 ];
 
+// --- Tote sizing assumptions (inches) ---
+// Adjust these to match the actual HDX 27 gal tote dimensions you want to use.
+const TOTE_SPECS = {
+  hdx27: {
+    w: 20, // left-to-right width of one tote
+    h: 15, // height of one tote
+    d_standard: 30, // depth when oriented "standard"
+    d_sideways: 20, // depth when oriented "sideways"
+  },
+};
+
+// --- Rack structure assumptions (inches) ---
+// Tune these to match your actual rack design.
+const RACK_STRUCT = {
+  // vertical uprights BETWEEN tote bays (the posts you see between columns)
+  uprightW: 1.5,
+  // left + right outer frame thickness (outside vertical rails)
+  outerSideW: 1.5,
+  // horizontal shelf / rail thickness between tote rows
+  shelfH: 1.5,
+  // top + bottom outer frame thickness
+  outerTopH: 1.5,
+  outerBottomH: 1.5,
+  // breathing room around each tote (so it’s not jammed)
+  gapW: 1, // gap between tote and uprights/sides
+  gapH: 2, // gap between tote and shelf rails
+};
+
+
+const CLEARANCE = {
+  w: 1, // extra inches per tote horizontally
+  h: 1, // extra inches per tote vertically
+};
+
+
 function tinyId() {
   return Math.random().toString(16).slice(2, 10);
 }
@@ -180,6 +215,44 @@ function BuilderApp() {
     return { usable, cols, used, rem };
   }, [wallWidthIn, selected.unitW]);
 
+    const maxFit = useMemo(() => {
+    // Use HDX dims for now; if toteType is custom, you can fall back to conservative defaults.
+    const tote = TOTE_SPECS.hdx27;
+
+    const usableW = clamp(Number(wallWidthIn) || 0, 24, 360);
+    const usableH = clamp(Number(wallHeightIn) || 0, 24, 360);
+
+    // Per-tote bay sizing including the “gap” around a tote
+    const bayW = tote.w + RACK_STRUCT.gapW * 2;
+    const bayH = tote.h + RACK_STRUCT.gapH * 2;
+
+    // Total width model:
+    // outer sides + (cols * bayW) + (cols - 1) * uprightW
+    const maxCols =
+      usableW < (RACK_STRUCT.outerSideW * 2 + bayW)
+        ? 0
+        : Math.floor(
+            (usableW - (RACK_STRUCT.outerSideW * 2) + RACK_STRUCT.uprightW) /
+              (bayW + RACK_STRUCT.uprightW)
+          );
+
+    // Total height model:
+    // outer top/bottom + (rows * bayH) + (rows - 1) * shelfH
+    const maxRows =
+      usableH < (RACK_STRUCT.outerTopH + RACK_STRUCT.outerBottomH + bayH)
+        ? 0
+        : Math.floor(
+            (usableH - (RACK_STRUCT.outerTopH + RACK_STRUCT.outerBottomH) + RACK_STRUCT.shelfH) /
+              (bayH + RACK_STRUCT.shelfH)
+          );
+
+    return {
+      cols: clamp(maxCols, 0, 99),
+      rows: clamp(maxRows, 0, 99),
+    };
+  }, [wallWidthIn, wallHeightIn]);
+
+
   const estTotal = useMemo(() => (Number(qty) || 0) * selected.price, [qty, selected.price]);
 
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
@@ -311,6 +384,14 @@ function BuilderApp() {
               </div>
 
                   </div>
+
+                  {/* MAX FIT RESULT */}
+                  <div className="rounded-2xl border border-neutral-200 bg-neutral-50 p-3">
+                  <div className="text-xs text-neutral-500">Max fit</div>
+                  <div className="text-sm font-semibold">
+                    {maxFit.cols} totes wide by {maxFit.rows} totes tall
+                  </div>
+              </div>
 
                   <Separator />
 
