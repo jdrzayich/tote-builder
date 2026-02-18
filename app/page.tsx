@@ -40,6 +40,8 @@ const ADDONS = [
   { id: "remove", name: "Include Totes" },
 ];
 
+const PRICE_PER_BAY = 35; // <-- set your real $ per tote bay
+
 const TOTES = {
   hdx27: {
     wStandard: 19.6, // along the wall when tote is "standard"
@@ -241,10 +243,12 @@ function BuilderApp() {
   };
 }, [wallWidthIn, wallHeightIn, toteType, orientation]);
 
+  const totalBays = maxFit.cols * maxFit.rows;
 
-  const estTotal = useMemo(() => (Number(qty) || 0) * maxFit.cols * maxFit.rows * pricePerTote
-, [qty, maxFit.cols * maxFit.rows * pricePerTote
-]);
+  const estTotal = useMemo(() => {
+  return (Number(qty) || 0) * totalBays * PRICE_PER_BAY;
+}, [qty, totalBays]);
+
 
   const [quoteItems, setQuoteItems] = useState<QuoteItem[]>([]);
   const quoteEstTotal = useMemo(() => quoteItems.reduce((a, b) => a + b.estTotal, 0), [quoteItems]);
