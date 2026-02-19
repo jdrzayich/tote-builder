@@ -147,142 +147,173 @@ function Preview({
   cols: number;
   rows: number;
 }) {
-  // Keep preview readable on mobile (cap the grid drawn)
-  const drawCols = Math.max(1, Math.min(cols, 8));
-  const drawRows = Math.max(1, Math.min(rows, 6));
+  const pad = 18;
 
-  const cellW = 20;
-  const cellH = 16;
-  const pad = 14;
+  // cell sizing (tote “bay”)
+  const cellW = 34;
+  const cellH = 26;
 
-  const w = pad * 2 + drawCols * cellW;
-  const h = pad * 2 + drawRows * cellH;
+  // rack frame sizing
+  const postW = 10;
+  const beamH = 10;
+  const shelfGap = 10;
 
-  const W = Math.max(260, w + 40);
-  const H = Math.max(170, h + 60);
+  // inner area for totes
+  const innerW = cols * cellW + (cols - 1) * shelfGap;
+  const innerH = rows * cellH + (rows - 1) * shelfGap;
+
+  // overall rack
+  const rackW = innerW + postW * 2 + 20;
+  const rackH = innerH + beamH * 2 + 20;
+
+  // svg
+  const W = Math.max(260, rackW + pad * 2);
+  const H = Math.max(180, rackH + pad * 2 + 28);
+
+  const x0 = (W - rackW) / 2;
+  const y0 = (H - rackH) / 2 - 6;
+
+  // helper: tote position (top-left)
+  const toteX = (c: number) => x0 + postW + 10 + c * (cellW + shelfGap);
+  const toteY = (r: number) => y0 + beamH + 10 + r * (cellH + shelfGap);
 
   return (
     <div className="w-full flex items-center justify-center">
-      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="drop-shadow-sm">
+      <svg width={W} height={H} className="drop-shadow-sm">
         <defs>
-          {/* Card shadow */}
-          <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
-            <feDropShadow dx="0" dy="10" stdDeviation="12" floodColor="#000" floodOpacity="0.12" />
-          </filter>
-
-          {/* Rack shadow */}
-          <filter id="rackShadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feDropShadow dx="0" dy="12" stdDeviation="10" floodColor="#000" floodOpacity="0.18" />
-          </filter>
-
-          {/* Soft inner shadow for “depth” */}
-          <filter id="innerShadow" x="-30%" y="-30%" width="160%" height="160%">
-            <feOffset dx="0" dy="2" />
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feComposite in="blur" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="inner" />
-            <feColorMatrix
-              in="inner"
-              type="matrix"
-              values="0 0 0 0 0
-                      0 0 0 0 0
-                      0 0 0 0 0
-                      0 0 0 0.25 0"
-              result="shadow"
-            />
-            <feComposite in="shadow" in2="SourceGraphic" operator="over" />
-          </filter>
-
-          {/* Rack body gradient (top highlight → bottom darker) */}
-          <linearGradient id="rackBody" x1="0" y1="0" x2="0" y2="1">
+          {/* subtle background */}
+          <radialGradient id="bgGlow" cx="50%" cy="35%" r="70%">
             <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="60%" stopColor="#f3f4f6" />
-            <stop offset="100%" stopColor="#e5e7eb" />
+            <stop offset="100%" stopColor="#f4f4f5" />
+          </radialGradient>
+
+          {/* rack metal */}
+          <linearGradient id="rackMetal" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#2b2f36" />
+            <stop offset="55%" stopColor="#1c2026" />
+            <stop offset="100%" stopColor="#111318" />
           </linearGradient>
 
-          {/* Top face gradient for a slight “3D” lip */}
-          <linearGradient id="rackTop" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.95" />
+          {/* rack highlight */}
+          <linearGradient id="rackEdge" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.20" />
+            <stop offset="35%" stopColor="#ffffff" stopOpacity="0.06" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0.25" />
           </linearGradient>
 
-          {/* Cell gradient */}
-          <linearGradient id="cellGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.35" />
+          {/* tote body */}
+          <linearGradient id="toteBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1b1f24" />
+            <stop offset="55%" stopColor="#111418" />
+            <stop offset="100%" stopColor="#0b0d10" />
           </linearGradient>
+
+          {/* lid */}
+          <linearGradient id="lidYellow" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffe45c" />
+            <stop offset="55%" stopColor="#ffd21f" />
+            <stop offset="100%" stopColor="#e6b800" />
+          </linearGradient>
+
+          {/* shadow */}
+          <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="6" stdDeviation="6" floodColor="#000" floodOpacity="0.22" />
+          </filter>
+
+          {/* inner shadow-ish */}
+          <filter id="innerGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="1" stdDeviation="2" floodColor="#fff" floodOpacity="0.10" />
+          </filter>
         </defs>
 
-        {/* Outer card */}
-        <rect x="10" y="10" width={W - 20} height={H - 20} rx="22" fill="white" filter="url(#cardShadow)" />
-        <rect x="10" y="10" width={W - 20} height={H - 20} rx="22" fill="none" stroke="#111827" opacity="0.08" />
+        {/* card */}
+        <rect x="0" y="0" width={W} height={H} rx="18" fill="url(#bgGlow)" />
+        <rect x="0" y="0" width={W} height={H} rx="18" fill="none" stroke="#111827" opacity="0.08" />
 
-        {/* Center the rack group */}
-        <g transform={`translate(${(W - w) / 2}, ${(H - h) / 2 - 6})`}>
-          {/* Rack “top lip” (fake 3D) */}
-          <g filter="url(#rackShadow)">
-            <rect x="0" y="-8" width={w} height={18} rx="14" fill="url(#rackTop)" />
-            <rect x="0" y="-8" width={w} height={18} rx="14" fill="none" stroke="#111827" opacity="0.10" />
+        {/* rack */}
+        <g filter="url(#softShadow)">
+          {/* outer rack body */}
+          <rect x={x0} y={y0} width={rackW} height={rackH} rx="20" fill="url(#rackMetal)" />
+          {/* rack edge sheen */}
+          <rect x={x0} y={y0} width={rackW} height={rackH} rx="20" fill="url(#rackEdge)" opacity="0.9" />
 
-            {/* Rack body */}
-            <rect x="0" y="0" width={w} height={h} rx="14" fill="url(#rackBody)" />
-            <rect x="0" y="0" width={w} height={h} rx="14" fill="none" stroke="#111827" opacity="0.12" />
+          {/* beams (top & bottom) */}
+          <rect x={x0 + 10} y={y0 + 8} width={rackW - 20} height={beamH} rx="6" fill="#0b0d10" opacity="0.55" />
+          <rect x={x0 + 10} y={y0 + rackH - beamH - 8} width={rackW - 20} height={beamH} rx="6" fill="#0b0d10" opacity="0.55" />
 
-            {/* Inner shadow adds depth */}
-            <rect x="0" y="0" width={w} height={h} rx="14" filter="url(#innerShadow)" opacity="0.9" />
-          </g>
+          {/* side posts */}
+          <rect x={x0 + 10} y={y0 + 10} width={postW} height={rackH - 20} rx="6" fill="#0b0d10" opacity="0.55" />
+          <rect x={x0 + rackW - postW - 10} y={y0 + 10} width={postW} height={rackH - 20} rx="6" fill="#0b0d10" opacity="0.55" />
 
-          {/* Cells */}
-          {Array.from({ length: drawRows }).map((_, r) =>
-            Array.from({ length: drawCols }).map((__, c) => {
-              const x = pad + c * cellW;
-              const y = pad + r * cellH;
+          {/* shelves (one per row, under each row of totes) */}
+          {Array.from({ length: rows }).map((_, r) => {
+            const shelfY = toteY(r) + cellH + 6;
+            return (
+              <g key={`shelf-${r}`} opacity="0.65">
+                <rect
+                  x={x0 + postW + 10}
+                  y={shelfY}
+                  width={rackW - (postW + 10) * 2}
+                  height={8}
+                  rx="4"
+                  fill="#0b0d10"
+                />
+                <rect
+                  x={x0 + postW + 10}
+                  y={shelfY}
+                  width={rackW - (postW + 10) * 2}
+                  height={2}
+                  rx="2"
+                  fill="#ffffff"
+                  opacity="0.08"
+                />
+              </g>
+            );
+          })}
+
+          {/* totes */}
+          {Array.from({ length: rows }).map((_, r) =>
+            Array.from({ length: cols }).map((__, c) => {
+              const x = toteX(c);
+              const y = toteY(r);
+
               return (
-                <g key={`${r}-${c}`}>
-                  <rect
-                    x={x}
-                    y={y}
-                    width={cellW - 3}
-                    height={cellH - 3}
-                    rx="5"
-                    fill="url(#cellGrad)"
-                    stroke="#111827"
-                    opacity="0.22"
-                  />
+                <g key={`t-${r}-${c}`} filter="url(#innerGlow)">
+                  {/* lid (slightly wider than body) */}
+                  <rect x={x - 1} y={y - 2} width={cellW + 2} height={8} rx="4" fill="url(#lidYellow)" />
+                  {/* lid lip */}
+                  <rect x={x - 1} y={y + 4} width={cellW + 2} height={2} rx="2" fill="#000" opacity="0.18" />
+
+                  {/* body */}
+                  <rect x={x} y={y + 6} width={cellW} height={cellH - 6} rx="7" fill="url(#toteBody)" />
+
+                  {/* subtle front highlight */}
+                  <rect x={x + 2} y={y + 8} width={cellW - 4} height={3} rx="2" fill="#fff" opacity="0.05" />
+
+                  {/* handle hint */}
+                  <rect x={x + cellW * 0.25} y={y + cellH * 0.55} width={cellW * 0.5} height={4} rx="2" fill="#000" opacity="0.25" />
                 </g>
               );
             })
           )}
-
-          {/* Caption */}
-          <text
-            x={w / 2}
-            y={h + 28}
-            textAnchor="middle"
-            fontSize="12"
-            fill="#111827"
-            opacity="0.65"
-          >
-            {wallWidthIn}" run • {cols} across • {rows} tall
-          </text>
-
-          {/* If we capped the drawing, hint it */}
-          {(cols > drawCols || rows > drawRows) && (
-            <text
-              x={w / 2}
-              y={h + 44}
-              textAnchor="middle"
-              fontSize="11"
-              fill="#111827"
-              opacity="0.45"
-            >
-              (preview capped for display)
-            </text>
-          )}
         </g>
+
+        {/* caption */}
+        <text
+          x={W / 2}
+          y={H - 10}
+          textAnchor="middle"
+          fontSize="12"
+          fill="#111827"
+          opacity="0.65"
+        >
+          {wallWidthIn}" run • {cols} across • {rows} tall
+        </text>
       </svg>
     </div>
   );
 }
+
 
 
 type QuoteItem = {
