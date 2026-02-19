@@ -8,9 +8,10 @@ module.exports = {
     extend: {
       colors: {
         brand: {
-          primary: 'rgb(var(--primary) / <alpha-value>)',
-          accent: 'rgb(var(--accent) / <alpha-value>)',
-          muted: 'rgb(var(--muted) / <alpha-value>)',
+          navy: "rgb(var(--ryg-navy) / <alpha-value>)",
+          slate: "rgb(var(--ryg-slate) / <alpha-value>)",
+          orange: "rgb(var(--ryg-orange) / <alpha-value>)",
+          white: "rgb(var(--ryg-white) / <alpha-value>)",
         },
       },
     },
