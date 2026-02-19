@@ -94,9 +94,12 @@ function WoodFrame({
         );
       })}
 
-      {/* subtle front lip (gives that “frame” feel) */}
+      {/* thin front border (does NOT cover totes) */}
       <mesh castShadow receiveShadow material={darkEdgeMat} position={[0, 0, depth / 2 - 0.02]}>
-        <boxGeometry args={[outerW, outerH, 0.03]} />
+        <boxGeometry args={[outerW, railT, 0.03]} />
+      </mesh>
+      <mesh castShadow receiveShadow material={darkEdgeMat} position={[0, 0, depth / 2 - 0.02]}>
+        <boxGeometry args={[railT, outerH, 0.03]} />
       </mesh>
     </group>
   );
