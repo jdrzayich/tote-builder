@@ -300,8 +300,8 @@ function Preview({
 
         {/* caption */}
       <text
-        x={w / 2}
-        y={h + 22}
+        x={W / 2}
+        y={H - 8}
         textAnchor="middle"
         fontSize="12"
         fill="#111827"
