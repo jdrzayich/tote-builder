@@ -2,9 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-:root{
+:root {
   color-scheme: light;
+
+  /* Rack Your Garage brand */
+  --brand-navy: 18 43 78;       /* rgb(18, 43, 78) */
+  --brand-white: 255 255 255;   /* rgb(255, 255, 255) */
+  --brand-blue: 112 147 169;    /* rgb(112, 147, 169) */
+  --brand-orange: 252 108 3;    /* rgb(252, 108, 3) */
+
+  /* Use across UI */
+  --primary: var(--brand-navy);
+  --primary-foreground: var(--brand-white);
+  --accent: var(--brand-orange);
+  --muted: var(--brand-blue);
+  --ring: var(--brand-orange);
 }
-html, body{
-  height:100%;
+
+html, body {
+  height: 100%;
 }
