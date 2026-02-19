@@ -511,6 +511,7 @@ function BuilderApp() {
     } finally {
       setSubmitting(false);
     }
+  }
 
   return (
     <div className="min-h-screen">
@@ -524,11 +525,8 @@ function BuilderApp() {
                 className="h-8 object-contain"
               />
               <div className="leading-tight">
-                <div className="text-sm font-semibold text-ryg-navy">
-                  {BRAND.name}
-                </div>
-                <div className="text-xs text-neutral-500">
-                  {BRAND.product}
+                <div className="text-sm font-semibold text-ryg-navy">{BRAND.name}</div>
+                <div className="text-xs text-neutral-500">{BRAND.product}</div>
               </div>
             </div>
           </div>
@@ -696,7 +694,7 @@ function BuilderApp() {
       onClick={() => setSizeMode("max")}
       className={`rounded-2xl border p-3 text-left ${
         sizeMode === "max"
-           "border-ryg-navy bg-ryg-blue/15"
+            ? "border-ryg-navy bg-ryg-blue/15"
             : "border-neutral-200 bg-white"
       }`}
     >
