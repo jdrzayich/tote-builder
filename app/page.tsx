@@ -419,7 +419,6 @@ function BuilderApp() {
 <div className="space-y-2">
   <div className="text-sm font-semibold">Tote details</div>
   <div className="text-sm text-neutral-600">
-    Helps us validate spacing for your quote.
   </div>
 
   <div className="space-y-2">
