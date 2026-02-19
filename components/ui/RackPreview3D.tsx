@@ -3,273 +3,231 @@
 import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import * as THREE from "three";
 
 type Props = {
   cols: number;
   rows: number;
-  className?: string;
 };
 
-function WoodFrame({
-  cols,
-  rows,
-  cellW,
-  cellH,
-  gap,
-}: {
-  cols: number;
-  rows: number;
-  cellW: number;
-  cellH: number;
-  gap: number;
-}) {
-  // overall inner footprint (totes area)
-  const innerW = cols * cellW + (cols - 1) * gap;
-  const innerH = rows * cellH + (rows - 1) * gap;
+/**
+ * Simple wood tote rack:
+ * - Frame posts (verticals)
+ * - Top + bottom rectangles
+ * - TWO rails per tote bay (left + right), running front-to-back
+ * - Totes sitting on those rails
+ */
+function Rack({ cols, rows }: Props) {
+  // --- “real-ish” proportions (tweak these later)
+  const bayW = 1.25;          // width allocated per tote bay (left-right)
+  const bayH = 0.85;          // height per row
+  const depth = 1.35;         // rack depth (front-back)
 
-  // frame thicknesses
-  const railT = 0.18; // thickness of frame beams
-  const postT = 0.22;
-  const depth = 1.2; // rack depth (z)
+  const post = 0.12;          // 2x framing thickness (visual)
+  const railW = 0.10;         // rail thickness (left/right)
+  const railH = 0.08;         // rail height
+  const railInset = 0.08;     // push rails inward from the post face
+  const toteClearSide = 0.05; // clearance between tote and rail
 
-  const outerW = innerW + postT * 2 + 0.6;
-  const outerH = innerH + postT * 2 + 0.6;
+  // Tote size inside each bay
+  const toteW = bayW - (post * 2) - (railW * 2) - (toteClearSide * 4);
+  const toteH = bayH * 0.70;
+  const toteD = depth * 0.82;
 
-  const woodMat = useMemo(() => {
-    // warm light wood look
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#E6D2A6"),
-      roughness: 0.55,
-      metalness: 0.05,
-    });
-  }, []);
+  // Overall rack size
+  const rackW = cols * bayW + post * 2;   // outer posts
+  const rackH = rows * bayH + post * 2;
 
-  const darkEdgeMat = useMemo(() => {
-    // slightly darker edges/shadows
-    return new THREE.MeshStandardMaterial({
-      color: new THREE.Color("#D3B98C"),
-      roughness: 0.7,
-      metalness: 0.03,
-    });
-  }, []);
+  const startX = -rackW / 2;
+  const startY = -rackH / 2;
 
-  // helper positions
-  const xL = -outerW / 2;
-  const xR = outerW / 2;
-  const yB = -outerH / 2;
-  const yT = outerH / 2;
-
-  return (
-    <group>
-      {/* outer posts left/right */}
-      <mesh castShadow receiveShadow material={woodMat} position={[xL + postT / 2, 0, 0]}>
-        <boxGeometry args={[postT, outerH, depth]} />
-      </mesh>
-      <mesh castShadow receiveShadow material={woodMat} position={[xR - postT / 2, 0, 0]}>
-        <boxGeometry args={[postT, outerH, depth]} />
-      </mesh>
-
-      {/* outer rails top/bottom */}
-      <mesh castShadow receiveShadow material={woodMat} position={[0, yT - railT / 2, 0]}>
-        <boxGeometry args={[outerW, railT, depth]} />
-      </mesh>
-      <mesh castShadow receiveShadow material={woodMat} position={[0, yB + railT / 2, 0]}>
-        <boxGeometry args={[outerW, railT, depth]} />
-      </mesh>
-
-      {/* inner shelf rails per row (like the “bars” you see) */}
-      {Array.from({ length: rows }).map((_, r) => {
-        const y = yT - postT - 0.3 - r * (cellH + gap) - cellH - 0.08;
-        return (
-          <mesh
-            key={`shelf-${r}`}
-            castShadow
-            receiveShadow
-            material={darkEdgeMat}
-            position={[0, y, depth / 2 - 0.1]}
-          >
-            <boxGeometry args={[outerW - postT * 2 - 0.2, 0.06, 0.06]} />
-          </mesh>
-        );
-      })}
-
-      {/* thin front border (does NOT cover totes) */}
-      <mesh castShadow receiveShadow material={darkEdgeMat} position={[0, 0, depth / 2 - 0.02]}>
-        <boxGeometry args={[outerW, railT, 0.03]} />
-      </mesh>
-      <mesh castShadow receiveShadow material={darkEdgeMat} position={[0, 0, depth / 2 - 0.02]}>
-        <boxGeometry args={[railT, outerH, 0.03]} />
-      </mesh>
-    </group>
+  const woodMat = useMemo(
+    () => ({
+      color: "#C8B58C", // light wood
+      roughness: 0.9,
+      metalness: 0.0,
+    }),
+    []
   );
-}
 
-function Tote({
-  x,
-  y,
-}: {
-  x: number;
-  y: number;
-}) {
-  // tote dimensions
-  const bodyW = 0.95;
-  const bodyH = 0.7;
-  const bodyD = 1.05;
+  const railMat = useMemo(
+    () => ({
+      color: "#B6A57F",
+      roughness: 0.9,
+      metalness: 0.0,
+    }),
+    []
+  );
 
-  const lidH = 0.12;
-  const lidW = bodyW + 0.06;
-  const lidD = bodyD + 0.06;
-
-  const bodyMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#121417"),
-        roughness: 0.55,
-        metalness: 0.1,
-      }),
+  const toteMat = useMemo(
+    () => ({
+      color: "#0B0D10",
+      roughness: 0.7,
+      metalness: 0.05,
+    }),
     []
   );
 
   const lidMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#FFD21F"),
-        roughness: 0.4,
-        metalness: 0.05,
-      }),
+    () => ({
+      color: "#D9B21F",
+      roughness: 0.6,
+      metalness: 0.05,
+    }),
     []
   );
-
-  const handleMat = useMemo(
-    () =>
-      new THREE.MeshStandardMaterial({
-        color: new THREE.Color("#0B0D10"),
-        roughness: 0.7,
-        metalness: 0.05,
-      }),
-    []
-  );
-
-  return (
-    <group position={[x, y, 0]}>
-      {/* body */}
-      <mesh castShadow receiveShadow material={bodyMat} position={[0, 0, 0]}>
-        <boxGeometry args={[bodyW, bodyH, bodyD]} />
-      </mesh>
-
-      {/* lid */}
-      <mesh castShadow receiveShadow material={lidMat} position={[0, bodyH / 2 + lidH / 2 - 0.02, 0]}>
-        <boxGeometry args={[lidW, lidH, lidD]} />
-      </mesh>
-
-      {/* front handle indent */}
-      <mesh castShadow receiveShadow material={handleMat} position={[0, -0.02, bodyD / 2 - 0.03]}>
-        <boxGeometry args={[bodyW * 0.55, 0.06, 0.03]} />
-      </mesh>
-
-      {/* subtle front highlight */}
-      <mesh castShadow receiveShadow>
-        <boxGeometry args={[bodyW * 0.9, 0.02, 0.01]} />
-        <meshStandardMaterial color="#FFFFFF" opacity={0.06} transparent />
-      </mesh>
-    </group>
-  );
-}
-
-function Rack({
-  cols,
-  rows,
-}: {
-  cols: number;
-  rows: number;
-}) {
-  // “cell” sizes = tote spacing grid
-  const cellW = 1.1;
-  const cellH = 0.85;
-  const gap = 0.18;
-
-  const totalW = cols * cellW + (cols - 1) * gap;
-  const totalH = rows * cellH + (rows - 1) * gap;
-
-  const startX = -totalW / 2 + cellW / 2;
-  const startY = totalH / 2 - cellH / 2;
 
   return (
     <group>
-      <WoodFrame cols={cols} rows={rows} cellW={cellW} cellH={cellH} gap={gap} />
+      {/* ====== OUTER FRAME (4 corner posts) ====== */}
+      {[
+        [startX + post / 2, startY + rackH / 2, 0],
+        [startX + rackW - post / 2, startY + rackH / 2, 0],
+        [startX + post / 2, startY + post / 2, 0],
+        [startX + rackW - post / 2, startY + post / 2, 0],
+      ].map((p, i) => (
+        <mesh key={`corner-${i}`} position={p as any} castShadow receiveShadow>
+          <boxGeometry args={[post, rackH, post]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
 
-      {/* totes */}
-      {Array.from({ length: rows }).map((_, r) =>
-        Array.from({ length: cols }).map((__, c) => {
-          const x = startX + c * (cellW + gap);
-          const y = startY - r * (cellH + gap);
-          return <Tote key={`t-${r}-${c}`} x={x} y={y} />;
-        })
-      )}
+      {/* ====== INTERNAL VERTICAL POSTS BETWEEN BAYS ====== */}
+      {Array.from({ length: cols - 1 }).map((_, c) => {
+        const x = startX + post + (c + 1) * bayW;
+        return (
+          <mesh key={`vpost-${c}`} position={[x, startY + rackH / 2, 0]} castShadow receiveShadow>
+            <boxGeometry args={[post, rackH, post]} />
+            <meshStandardMaterial {...woodMat} />
+          </mesh>
+        );
+      })}
+
+      {/* ====== TOP + BOTTOM RECTANGLES ====== */}
+      {/* top front/back beams */}
+      {[
+        // top front
+        [0, startY + rackH - post / 2, -(depth / 2)],
+        // top back
+        [0, startY + rackH - post / 2, +(depth / 2)],
+        // bottom front
+        [0, startY + post / 2, -(depth / 2)],
+        // bottom back
+        [0, startY + post / 2, +(depth / 2)],
+      ].map((p, i) => (
+        <mesh key={`hbeam-${i}`} position={p as any} castShadow receiveShadow>
+          <boxGeometry args={[rackW, post, post]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+
+      {/* left/right depth beams (front-to-back) */}
+      {[
+        // left top depth
+        [startX + post / 2, startY + rackH - post / 2, 0],
+        // right top depth
+        [startX + rackW - post / 2, startY + rackH - post / 2, 0],
+        // left bottom depth
+        [startX + post / 2, startY + post / 2, 0],
+        // right bottom depth
+        [startX + rackW - post / 2, startY + post / 2, 0],
+      ].map((p, i) => (
+        <mesh key={`dbeam-${i}`} position={p as any} castShadow receiveShadow>
+          <boxGeometry args={[post, post, depth]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+      ))}
+
+      {/* ====== RAILS + TOTES PER BAY ====== */}
+      {Array.from({ length: rows }).map((_, r) => {
+        return Array.from({ length: cols }).map((__, c) => {
+          // bay center
+          const bayCenterX = startX + post + c * bayW + bayW / 2;
+          const bayBottomY = startY + post + r * bayH;
+          const bayCenterY = bayBottomY + bayH / 2;
+
+          // Put rails at ~lower third of each bay (like your photo)
+          const railY = bayBottomY + bayH * 0.34;
+
+          // Two rails, left/right of tote bay
+          const leftRailX =
+            bayCenterX - (toteW / 2) - toteClearSide - railW / 2 - railInset * 0.2;
+          const rightRailX =
+            bayCenterX + (toteW / 2) + toteClearSide + railW / 2 + railInset * 0.2;
+
+          // Tote sits slightly above rails
+          const toteY = railY + railH / 2 + toteH / 2 + 0.02;
+
+          return (
+            <group key={`bay-${r}-${c}`}>
+              {/* Left rail */}
+              <mesh position={[leftRailX, railY, 0]} castShadow receiveShadow>
+                <boxGeometry args={[railW, railH, depth - post * 1.2]} />
+                <meshStandardMaterial {...railMat} />
+              </mesh>
+
+              {/* Right rail */}
+              <mesh position={[rightRailX, railY, 0]} castShadow receiveShadow>
+                <boxGeometry args={[railW, railH, depth - post * 1.2]} />
+                <meshStandardMaterial {...railMat} />
+              </mesh>
+
+              {/* Tote body */}
+              <mesh position={[bayCenterX, toteY, 0]} castShadow receiveShadow>
+                <boxGeometry args={[toteW, toteH, toteD]} />
+                <meshStandardMaterial {...toteMat} />
+              </mesh>
+
+              {/* Tote lid */}
+              <mesh position={[bayCenterX, toteY + toteH / 2 + 0.05, 0]} castShadow receiveShadow>
+                <boxGeometry args={[toteW * 1.02, 0.08, toteD * 1.02]} />
+                <meshStandardMaterial {...lidMat} />
+              </mesh>
+            </group>
+          );
+        });
+      })}
     </group>
   );
 }
 
-export default function RackPreview3D({ cols, rows, className }: Props) {
-  // Keep it stable if cols/rows are 0
-  const safeCols = Math.max(1, cols || 1);
-  const safeRows = Math.max(1, rows || 1);
+export default function RackPreview3D({ cols, rows }: Props) {
+  // Auto zoom: scale camera based on rack size
+  const camZ = useMemo(() => {
+    const biggest = Math.max(cols * 1.25, rows * 0.9);
+    return 6 + biggest * 1.1; // zoom out more as rack grows
+  }, [cols, rows]);
 
   return (
-    <div className={className ?? ""}>
-      <div className="w-full overflow-hidden rounded-3xl border border-neutral-200 bg-white">
-        <div className="h-[260px] w-full">
-          <Canvas
-            shadows
-            camera={{ position: [0, 1.2, 9.5], fov: 45 }}
-            gl={{ antialias: true, alpha: false }}
-          >
-            {/* Background */}
-            <color attach="background" args={["#ffffff"]} />
+    <div className="w-full overflow-hidden rounded-3xl border border-neutral-200 bg-white">
+      <div className="h-[260px] w-full">
+        <Canvas
+          shadows
+          camera={{ position: [0, 1.6, camZ], fov: 45 }}
+        >
+          <ambientLight intensity={0.6} />
+          <directionalLight
+            position={[6, 8, 6]}
+            intensity={1.1}
+            castShadow
+            shadow-mapSize-width={1024}
+            shadow-mapSize-height={1024}
+          />
 
-            {/* Lights */}
-            <ambientLight intensity={0.55} />
-            <directionalLight
-              position={[5, 7, 6]}
-              intensity={1.25}
-              castShadow
-              shadow-mapSize-width={1024}
-              shadow-mapSize-height={1024}
-              shadow-camera-near={0.1}
-              shadow-camera-far={30}
-              shadow-camera-left={-6}
-              shadow-camera-right={6}
-              shadow-camera-top={6}
-              shadow-camera-bottom={-6}
-            />
-            <directionalLight position={[-6, 4, 2]} intensity={0.55} />
+          {/* Ground */}
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.0, 0]} receiveShadow>
+            <planeGeometry args={[50, 50]} />
+            <meshStandardMaterial color="#ffffff" />
+          </mesh>
 
-            {/* Ground to catch shadows */}
-            <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.1, 0]} receiveShadow>
-              <planeGeometry args={[40, 40]} />
-              <shadowMaterial opacity={0.18} />
-            </mesh>
+          <Rack cols={cols} rows={rows} />
 
-            {/* Rack */}
-            <group position={[0, -0.2, 0]}>
-              <Rack cols={safeCols} rows={safeRows} />
-            </group>
-
-            {/* Controls */}
-            <OrbitControls
-              enablePan={false}
-              enableZoom={false}
-              minDistance={5.5}
-              maxDistance={13}
-              rotateSpeed={0.7}
-              minPolarAngle={Math.PI / 2.05}
-              maxPolarAngle={Math.PI / 1.8}
-              minAzimuthAngle={-Math.PI / 2.5}
-              maxAzimuthAngle={Math.PI / 2.5}
-            />
-          </Canvas>
-        </div>
+          <OrbitControls
+            enablePan={false}
+            minDistance={4.5}
+            maxDistance={20}
+            maxPolarAngle={Math.PI / 2.05}
+          />
+        </Canvas>
       </div>
     </div>
   );
