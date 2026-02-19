@@ -2,17 +2,16 @@
 module.exports = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx}",
+    "./pages/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
     extend: {
       colors: {
-        brand: {
-          navy: "rgb(var(--ryg-navy) / <alpha-value>)",
-          slate: "rgb(var(--ryg-slate) / <alpha-value>)",
-          orange: "rgb(var(--ryg-orange) / <alpha-value>)",
-          white: "rgb(var(--ryg-white) / <alpha-value>)",
-        },
+        "ryg-navy": "rgb(18 43 78)",
+        "ryg-white": "rgb(255 255 255)",
+        "ryg-blue": "rgb(112 147 169)",
+        "ryg-orange": "rgb(252 108 3)",
       },
     },
   },
