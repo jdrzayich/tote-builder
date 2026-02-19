@@ -517,38 +517,39 @@ function BuilderApp() {
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-md px-4 py-5">
         <div className="sticky top-0 z-40 -mx-4 mb-4 border-b border-neutral-200 bg-white/85 px-4 py-3 backdrop-blur">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <img
-                src="/logo.png"
-                alt="Rack Your Garage"
-                className="h-8 object-contain"
-              />
-              <div className="leading-tight">
-                <div className="text-sm font-semibold text-ryg-navy">{BRAND.name}</div>
-                <div className="text-xs text-neutral-500">{BRAND.product}</div>
-              </div>
-            </div>
-          </div>
+  <div className="flex items-center justify-between">
+    <div className="flex items-center gap-3">
+      <img
+        src="/logo.png"
+        alt="Rack Your Garage"
+        className="h-8 object-contain"
+      />
+      <div className="leading-tight">
+        <div className="text-sm font-semibold text-ryg-navy">{BRAND.name}</div>
+        <div className="text-xs text-neutral-500">{BRAND.product}</div>
+      </div>
+    </div>
 
-            <div className="flex items-center gap-2">
-              <Badge className="rounded-xl" variant="secondary">
-                Est. {money(step === "build" ? estTotal : quoteEstTotal)}
-              </Badge>
-              <Button
-                size="icon"
-                variant="outline"
-                onClick={() => setStep("quote")}
-                aria-label="Open quote"
-              >
-                <ShoppingCart className="h-4 w-4" />
-              </Button>
-            </div>
-          </div>
-          <div className="mt-3">
-            <Progress step={step} />
-          </div>
-        </div>
+    <div className="flex items-center gap-2">
+      <Badge className="rounded-xl" variant="secondary">
+        Est. {money(step === "build" ? estTotal : quoteEstTotal)}
+      </Badge>
+      <Button
+        size="icon"
+        variant="outline"
+        onClick={() => setStep("quote")}
+        aria-label="Open quote"
+      >
+        <ShoppingCart className="h-4 w-4" />
+      </Button>
+    </div>
+  </div>
+
+  <div className="mt-3">
+    <Progress step={step} />
+  </div>
+</div>
+
 
         <AnimatePresence mode="wait">
           {step === "build" && (
