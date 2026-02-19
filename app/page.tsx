@@ -516,15 +516,20 @@ function BuilderApp() {
   return (
     <div className="min-h-screen">
       <div className="mx-auto w-full max-w-md px-4 py-5">
-        <div className="sticky top-0 z-40 -mx-4 mb-4 border-b border-neutral-200 bg-white/85 px-4 py-3 backdrop-blur">
+        <div className="sticky top-0 z-40 -mx-4 mb-4 border-b border-white/10 bg-ryg-navy px-4 py-3 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-2xl bg-[rgb(var(--primary))] text-white grid place-items-center font-bold">R</div>
+              <img
+                src="/logo.png"
+                alt="Rack Your Garage"
+                className="h-9 object-contain"
+              />
               <div className="leading-tight">
-                <div className="text-sm font-semibold">{BRAND.name}</div>
-                <div className="text-xs text-neutral-500">{BRAND.product}</div>
-              </div>
+                <div className="text-sm font-semibold text-white">{BRAND.name}</div>
+                <div className="text-xs text-white/70">{BRAND.product}</div>
             </div>
+        </div>
+
             <div className="flex items-center gap-2">
               <Badge className="rounded-xl" variant="secondary">
                 Est. {money(step === "build" ? estTotal : quoteEstTotal)}
