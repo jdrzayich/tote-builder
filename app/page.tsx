@@ -604,7 +604,7 @@ function BuilderApp() {
   <div className="space-y-2">
     <Label>Tote type</Label>
 <select
-  className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+  className="h-10 w-full rounded-2xl border border-neutral-200 bg-white px-3 text-sm outline-none focus:ring-2 focus:ring-ryg-blue/30"
   value={toteType}
   onChange={(e) => setToteType(e.target.value as "hdx27" | "custom")}
 >
@@ -629,7 +629,7 @@ function BuilderApp() {
                       onClick={() => setOrientation("standard")}
                       className={`rounded-2xl border p-3 text-left ${
                         orientation === "standard"
-                          ? "border-emerald-600 bg-emerald-50"
+                          ? "border-ryg-navy bg-ryg-blue/15"
                           : "border-neutral-200 bg-white"
                       }`}
                     >
@@ -642,8 +642,8 @@ function BuilderApp() {
                         onClick={() => setOrientation("sideways")}
                         className={`rounded-2xl border p-3 text-left ${
                           orientation === "sideways"
-                            ? "border-emerald-600 bg-emerald-50"
-                            : "border-neutral-200 bg-white"
+                            ? "border-ryg-navy bg-ryg-blue/15"
+                          : "border-neutral-200 bg-white"
                          }`}
                         >
 
@@ -697,8 +697,8 @@ function BuilderApp() {
       onClick={() => setSizeMode("max")}
       className={`rounded-2xl border p-3 text-left ${
         sizeMode === "max"
-          ? "border-emerald-600 bg-emerald-50"
-          : "border-neutral-200 bg-white"
+           "border-ryg-navy bg-ryg-blue/15"
+            : "border-neutral-200 bg-white"
       }`}
     >
       <div className="text-sm font-semibold">Max fit</div>
@@ -712,7 +712,7 @@ function BuilderApp() {
       onClick={() => setSizeMode("manual")}
       className={`rounded-2xl border p-3 text-left ${
         sizeMode === "manual"
-          ? "border-emerald-600 bg-emerald-50"
+          ? "border-ryg-navy"
           : "border-neutral-200 bg-white"
       }`}
     >
@@ -956,7 +956,7 @@ function BuilderApp() {
                     <textarea
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className="min-h-[90px] w-full rounded-2xl border border-neutral-200 bg-white p-3 text-sm outline-none focus:ring-2 focus:ring-emerald-200"
+                      className="min-h-[90px] w-full rounded-2xl border border-neutral-200 bg-white p-3 text-sm outline-none focus:ring-2 focus:ring-ryg-blue/30"
                       placeholder="Anything we should know? Garage door tracks, sprinklers, lighting, etc."
                     />
                   </div>
@@ -974,9 +974,9 @@ function BuilderApp() {
 
               <Card>
                 <CardContent className="pt-4 space-y-3">
-                  <div className="rounded-3xl border border-neutral-200 bg-emerald-50 p-4">
+                  <div className="rounded-3xl border border-ryg-navy">
                     <div className="flex items-start gap-3">
-                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-emerald-700" />
+                      <CheckCircle2 className="mt-0.5 h-5 w-5 text-ryg-navy" />
                       <div>
                         <div className="font-semibold">What happens next</div>
                         <div className="mt-1 text-sm text-neutral-600">
