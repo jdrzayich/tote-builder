@@ -134,7 +134,9 @@ function Rack({ cols, rows }: Props) {
       {Array.from({ length: rows }).map((_, r) => {
         return Array.from({ length: cols }).map((__, c) => {
           // bay center
-          const bayCenterX = startX + post + c * bayW + bayW / 2;
+          const bayLeftX = startX + post + c * bayW;
+          const bayRightX = bayLeftX + bayW;
+          const bayCenterX = bayLeftX + bayW / 2;
           const bayBottomY = startY + post + r * bayH;
           const bayCenterY = bayBottomY + bayH / 2;
 
@@ -146,6 +148,8 @@ function Rack({ cols, rows }: Props) {
 
           // Rails should sit right under lid
           const railY = lidY - 0.05 - railH / 2;
+          const leftRailX = bayLeftX + railW / 2;
+          const rightRailX = bayRightX - railW / 2;
 
           return (
             <group key={`bay-${r}-${c}`}>
