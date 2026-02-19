@@ -187,11 +187,11 @@ function Preview({
             <stop offset="100%" stopColor="#f4f4f5" />
           </radialGradient>
 
-          {/* rack metal */}
-          <linearGradient id="rackMetal" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2b2f36" />
-            <stop offset="55%" stopColor="#1c2026" />
-            <stop offset="100%" stopColor="#111318" />
+          {/* rack wood */}
+          <linearGradient id="rackWood" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor="#c78a4a" />
+          <stop offset="45%" stopColor="#a96c2d" />
+          <stop offset="100%" stopColor="#7a4b1f" />
           </linearGradient>
 
           {/* rack highlight */}
