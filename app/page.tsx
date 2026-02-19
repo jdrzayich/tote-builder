@@ -138,42 +138,152 @@ function StepShell({
   );
 }
 
-function Preview({ wallWidthIn, cols }: { wallWidthIn: number; cols: number }) {
-  const rows = 2;
-  const cellW = 18;
-  const cellH = 14;
-  const pad = 10;
-  const w = pad * 2 + cols * cellW;
-  const h = pad * 2 + rows * cellH;
-  const W = Math.max(220, w);
-  const H = Math.max(140, h);
+function Preview({
+  wallWidthIn,
+  cols,
+  rows,
+}: {
+  wallWidthIn: number;
+  cols: number;
+  rows: number;
+}) {
+  // Keep preview readable on mobile (cap the grid drawn)
+  const drawCols = Math.max(1, Math.min(cols, 8));
+  const drawRows = Math.max(1, Math.min(rows, 6));
+
+  const cellW = 20;
+  const cellH = 16;
+  const pad = 14;
+
+  const w = pad * 2 + drawCols * cellW;
+  const h = pad * 2 + drawRows * cellH;
+
+  const W = Math.max(260, w + 40);
+  const H = Math.max(170, h + 60);
+
   return (
     <div className="w-full flex items-center justify-center">
-      <svg width={W} height={H} className="drop-shadow-sm">
-        <rect x="0" y="0" width={W} height={H} rx="18" fill="white" />
-        <g transform={`translate(${(W - w) / 2}, ${(H - h) / 2})`}>
-          <rect x="0" y="0" width={w} height={h} rx="14" fill="#0b1220" opacity="0.06" />
-          <rect x="0" y="0" width={w} height={h} rx="14" fill="none" stroke="#111827" opacity="0.15" />
-          {Array.from({ length: rows }).map((_, r) =>
-            Array.from({ length: cols }).map((__, c) => {
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`} className="drop-shadow-sm">
+        <defs>
+          {/* Card shadow */}
+          <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="10" stdDeviation="12" floodColor="#000" floodOpacity="0.12" />
+          </filter>
+
+          {/* Rack shadow */}
+          <filter id="rackShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="12" stdDeviation="10" floodColor="#000" floodOpacity="0.18" />
+          </filter>
+
+          {/* Soft inner shadow for “depth” */}
+          <filter id="innerShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feOffset dx="0" dy="2" />
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feComposite in="blur" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="inner" />
+            <feColorMatrix
+              in="inner"
+              type="matrix"
+              values="0 0 0 0 0
+                      0 0 0 0 0
+                      0 0 0 0 0
+                      0 0 0 0.25 0"
+              result="shadow"
+            />
+            <feComposite in="shadow" in2="SourceGraphic" operator="over" />
+          </filter>
+
+          {/* Rack body gradient (top highlight → bottom darker) */}
+          <linearGradient id="rackBody" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="60%" stopColor="#f3f4f6" />
+            <stop offset="100%" stopColor="#e5e7eb" />
+          </linearGradient>
+
+          {/* Top face gradient for a slight “3D” lip */}
+          <linearGradient id="rackTop" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.95" />
+          </linearGradient>
+
+          {/* Cell gradient */}
+          <linearGradient id="cellGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#d1d5db" stopOpacity="0.35" />
+          </linearGradient>
+        </defs>
+
+        {/* Outer card */}
+        <rect x="10" y="10" width={W - 20} height={H - 20} rx="22" fill="white" filter="url(#cardShadow)" />
+        <rect x="10" y="10" width={W - 20} height={H - 20} rx="22" fill="none" stroke="#111827" opacity="0.08" />
+
+        {/* Center the rack group */}
+        <g transform={`translate(${(W - w) / 2}, ${(H - h) / 2 - 6})`}>
+          {/* Rack “top lip” (fake 3D) */}
+          <g filter="url(#rackShadow)">
+            <rect x="0" y="-8" width={w} height={18} rx="14" fill="url(#rackTop)" />
+            <rect x="0" y="-8" width={w} height={18} rx="14" fill="none" stroke="#111827" opacity="0.10" />
+
+            {/* Rack body */}
+            <rect x="0" y="0" width={w} height={h} rx="14" fill="url(#rackBody)" />
+            <rect x="0" y="0" width={w} height={h} rx="14" fill="none" stroke="#111827" opacity="0.12" />
+
+            {/* Inner shadow adds depth */}
+            <rect x="0" y="0" width={w} height={h} rx="14" filter="url(#innerShadow)" opacity="0.9" />
+          </g>
+
+          {/* Cells */}
+          {Array.from({ length: drawRows }).map((_, r) =>
+            Array.from({ length: drawCols }).map((__, c) => {
               const x = pad + c * cellW;
               const y = pad + r * cellH;
               return (
                 <g key={`${r}-${c}`}>
-                  <rect x={x} y={y} width={cellW - 2} height={cellH - 2} rx="4" fill="#111827" opacity="0.06" />
-                  <rect x={x} y={y} width={cellW - 2} height={cellH - 2} rx="4" fill="none" stroke="#111827" opacity="0.15" />
+                  <rect
+                    x={x}
+                    y={y}
+                    width={cellW - 3}
+                    height={cellH - 3}
+                    rx="5"
+                    fill="url(#cellGrad)"
+                    stroke="#111827"
+                    opacity="0.22"
+                  />
                 </g>
               );
             })
           )}
-          <text x={w / 2} y={h + 22} textAnchor="middle" fontSize="12" fill="#111827" opacity="0.65">
-            {wallWidthIn}\" run • {cols} across
+
+          {/* Caption */}
+          <text
+            x={w / 2}
+            y={h + 28}
+            textAnchor="middle"
+            fontSize="12"
+            fill="#111827"
+            opacity="0.65"
+          >
+            {wallWidthIn}" run • {cols} across • {rows} tall
           </text>
+
+          {/* If we capped the drawing, hint it */}
+          {(cols > drawCols || rows > drawRows) && (
+            <text
+              x={w / 2}
+              y={h + 44}
+              textAnchor="middle"
+              fontSize="11"
+              fill="#111827"
+              opacity="0.45"
+            >
+              (preview capped for display)
+            </text>
+          )}
         </g>
       </svg>
     </div>
   );
 }
+
 
 type QuoteItem = {
   id: string;
@@ -627,7 +737,8 @@ function BuilderApp() {
 
                   <Separator />
 
-                    <Preview wallWidthIn={wallWidthIn} cols={selectedCols} />
+                    <Preview wallWidthIn={wallWidthIn} cols={selectedCols} rows={selectedRows} />
+
 
                   <div className="sticky bottom-3">
                     <div className="rounded-3xl border border-neutral-200 bg-white/90 p-3 shadow-lg backdrop-blur">
