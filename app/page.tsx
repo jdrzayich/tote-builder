@@ -529,7 +529,7 @@ function BuilderApp() {
               <Badge className="rounded-xl" variant="secondary">
                 Est. {money(step === "build" ? estTotal : quoteEstTotal)}
               </Badge>
-              <Button size="icon" variant="outline" onClick={() => setStep("quote")} aria-label="Open quote">
+              <Button size="icon" variant="outline" ={() => setStep("quote")} aria-label="Open quote">
                 <ShoppingCart className="h-4 w-4" />
               </Button>
             </div>
@@ -612,7 +612,7 @@ function BuilderApp() {
                     <div className="grid grid-cols-2 gap-2">
                       <button
                         type="button"
-                        onClick={() => setOrientation("standard")}
+                        ={() => setOrientation("standard")}
                         className={`rounded-2xl border p-3 text-left ${
                           orientation === "standard"
                             ? "border-emerald-600 bg-emerald-50"
@@ -625,7 +625,7 @@ function BuilderApp() {
 
                       <button
                         type="button"
-                        onClick={() => setOrientation("sideways")}
+                        ={() => setOrientation("sideways")}
                         className={`rounded-2xl border p-3 text-left ${
                           orientation === "sideways"
                             ? "border-emerald-600 bg-emerald-50"
@@ -807,11 +807,11 @@ function BuilderApp() {
                           <div className="text-lg font-semibold">{money(estTotal)}</div>
                         </div>
                        <Button
-  onClick={addToQuote}
-  style={{ backgroundColor: "rgb(252,108,3)", color: "white" }}
->
-  Add to quote <ArrowRight className="h-4 w-4" />
-</Button>
+                          onClick={addToQuote}
+                          className="bg-ryg-orange text-white hover:opacity-90"
+                        >
+                          Add to quote <ArrowRight className="h-4 w-4" />
+                        </Button>
                       </div>
                     </div>
                   </div>
