@@ -9,7 +9,7 @@ type Props = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export function Button({ className, variant="primary", size="md", ...props }: Props) {
   const v =
     variant === "primary"
-      ? "bg-emerald-600 text-white hover:bg-emerald-700"
+      ? "bg-ryg-orange text-white hover:opacity-90"
       : variant === "outline"
       ? "border border-neutral-200 bg-white hover:bg-neutral-50"
       : "bg-transparent hover:bg-neutral-100";
