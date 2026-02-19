@@ -299,16 +299,16 @@ function Preview({
         </g>
 
         {/* caption */}
-        <text
-          x={W / 2}
-          y={H - 10}
-          textAnchor="middle"
-          fontSize="12"
-          fill="#111827"
-          opacity="0.65"
-        >
-          {wallWidthIn}" run • {cols} across • {rows} tall
-        </text>
+      <text
+        x={w / 2}
+        y={h + 22}
+        textAnchor="middle"
+        fontSize="12"
+        fill="#111827"
+        opacity="0.65"
+      >
+        {cols} across • {rows} tall
+      </text>
       </svg>
     </div>
   );
