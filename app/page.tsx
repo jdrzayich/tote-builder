@@ -397,6 +397,31 @@ function BuilderApp() {
 
   const totalBays = selectedCols * selectedRows;
 
+  const rackDimensions = useMemo(() => {
+  if (selectedCols === 0 || selectedRows === 0) {
+    return { width: 0, height: 0 };
+  }
+
+  const tote = toteType === "custom" ? TOTES.custom : TOTES.hdx27;
+  const toteW = orientation === "standard" ? tote.wStandard : tote.wSideways;
+  const toteH = tote.h;
+
+  const width =
+    selectedCols * toteW +
+    (selectedCols - 1) * STRUCTURE.gapW +
+    (selectedCols + 1) * STRUCTURE.postW;
+
+  const height =
+    selectedRows * toteH +
+    selectedRows * STRUCTURE.shelfH +
+    (selectedRows + 1) * STRUCTURE.gapH;
+
+  return {
+    width: Math.round(width),
+    height: Math.round(height),
+  };
+}, [selectedCols, selectedRows, toteType, orientation]);
+
   const addonTotal = useMemo(() => {
   let total = 0;
 
@@ -770,6 +795,9 @@ function BuilderApp() {
 
                     <Preview wallWidthIn={wallWidthIn} cols={selectedCols} rows={selectedRows} />
 
+                  <div className="mt-2 text-center text-sm text-neutral-600">
+                    Approx. {rackDimensions.width}" W × {rackDimensions.height}" H
+                  </div>
 
                   <div className="sticky bottom-3">
                     <div className="rounded-3xl border border-neutral-200 bg-white/90 p-3 shadow-lg backdrop-blur">
