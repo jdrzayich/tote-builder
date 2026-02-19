@@ -82,11 +82,9 @@ function Rack({ cols, rows }: Props) {
       {[
         [startX + post / 2, startY + rackH / 2, 0],
         [startX + rackW - post / 2, startY + rackH / 2, 0],
-        [startX + post / 2, startY + post / 2, 0],
-        [startX + rackW - post / 2, startY + post / 2, 0],
       ].map((p, i) => (
-        <mesh key={`corner-${i}`} position={p as any} castShadow receiveShadow>
-          <boxGeometry args={[post, rackH, post]} />
+        <mesh key={`sidepost-top-${i}`} position={p as any} castShadow receiveShadow>
+          <boxGeometry args={[post, rackH, depth]} />
           <meshStandardMaterial {...woodMat} />
         </mesh>
       ))}
@@ -96,30 +94,25 @@ function Rack({ cols, rows }: Props) {
         const x = startX + post + (c + 1) * bayW;
         return (
           <mesh key={`vpost-${c}`} position={[x, startY + rackH / 2, 0]} castShadow receiveShadow>
-            <boxGeometry args={[post, rackH, post]} />
+            <boxGeometry args={[post, rackH, depth]} />
             <meshStandardMaterial {...woodMat} />
           </mesh>
         );
       })}
 
-      {/* ====== TOP + BOTTOM RECTANGLES ====== */}
-      {/* top front/back beams */}
+      {/* ====== TOP + BOTTOM BEAMS ====== */}
       {[
-        // top front
-        [0, startY + rackH - post / 2, -(depth / 2)],
-        // top back
-        [0, startY + rackH - post / 2, +(depth / 2)],
-        // bottom front
-        [0, startY + post / 2, -(depth / 2)],
-        // bottom back
-        [0, startY + post / 2, +(depth / 2)],
+        // top
+        [0, startY + rackH - post / 2, 0],
+        // bottom
+        [0, startY + post / 2, 0],
       ].map((p, i) => (
-        <mesh key={`hbeam-${i}`} position={p as any} castShadow receiveShadow>
-          <boxGeometry args={[rackW, post, post]} />
+        <mesh key={`topbot-${i}`} position={p as any} castShadow receiveShadow>
+          <boxGeometry args={[rackW, post, depth]} />
           <meshStandardMaterial {...woodMat} />
         </mesh>
       ))}
-
+      
       {/* left/right depth beams (front-to-back) */}
       {[
         // left top depth
@@ -145,17 +138,14 @@ function Rack({ cols, rows }: Props) {
           const bayBottomY = startY + post + r * bayH;
           const bayCenterY = bayBottomY + bayH / 2;
 
-          // Put rails at ~lower third of each bay (like your photo)
-          const railY = bayBottomY + bayH * 0.34;
+          // Tote vertical position (center)
+          const toteY = bayBottomY + bayH * 0.48;
 
-          // Two rails, left/right of tote bay
-          const leftRailX =
-            bayCenterX - (toteW / 2) - toteClearSide - railW / 2 - railInset * 0.2;
-          const rightRailX =
-            bayCenterX + (toteW / 2) + toteClearSide + railW / 2 + railInset * 0.2;
+          // Lid Y (center)
+          const lidY = toteY + toteH / 2 + 0.05;
 
-          // Tote sits slightly above rails
-          const toteY = railY + railH / 2 + toteH / 2 + 0.02;
+          // Rails should sit right under lid
+          const railY = lidY - 0.05 - railH / 2;
 
           return (
             <group key={`bay-${r}-${c}`}>
