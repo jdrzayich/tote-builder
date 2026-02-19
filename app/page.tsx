@@ -807,11 +807,11 @@ function BuilderApp() {
                           <div className="text-lg font-semibold">{money(estTotal)}</div>
                         </div>
                        <Button
-                        onClick={addToQuote}
-                        className="bg-ryg-orange text-white hover:opacity-90"
-                       >
-                        Add to quote <ArrowRight className="h-4 w-4" />
-                      </Button>
+  onClick={addToQuote}
+  style={{ backgroundColor: "rgb(252,108,3)", color: "white" }}
+>
+  Add to quote <ArrowRight className="h-4 w-4" />
+</Button>
                       </div>
                     </div>
                   </div>
