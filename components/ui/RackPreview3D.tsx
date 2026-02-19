@@ -54,7 +54,10 @@ export default function RackPreview3D({ cols, rows }: Props) {
   return (
     <div className="w-full rounded-3xl border border-neutral-200 overflow-hidden bg-white">
       <div className="h-[320px]">
-        <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
+        <Canvas
+          camera={{ position: [0, 0, 5], fov: 45 }}
+          style={{ touchAction: "none" }}
+        >
           <ambientLight intensity={0.8} />
           <directionalLight position={[5, 5, 5]} intensity={1} />
 
@@ -63,6 +66,9 @@ export default function RackPreview3D({ cols, rows }: Props) {
           <OrbitControls
             enablePan={false}
             enableZoom={false}
+            enableDamping
+            dampingFactor={0.08}
+            rotateSpeed={0.8}
           />
         </Canvas>
       </div>
