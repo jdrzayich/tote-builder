@@ -615,28 +615,29 @@ function BuilderApp() {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                      <button
-                        type="button"
-                        ={() => setOrientation("standard")}
-                        className={`rounded-2xl border p-3 text-left ${
-                          orientation === "standard"
-                            ? "border-emerald-600 bg-emerald-50"
-                            : "border-neutral-200 bg-white"
-                        }`}
-                      >
+                     <button
+                      type="button"
+                      onClick={() => setOrientation("standard")}
+                      className={`rounded-2xl border p-3 text-left ${
+                        orientation === "standard"
+                          ? "border-emerald-600 bg-emerald-50"
+                          : "border-neutral-200 bg-white"
+                      }`}
+                    >
                         <div className="text-sm font-semibold">Standard</div>
                         <div className="text-xs text-neutral-600">30&quot; deep</div>
                       </button>
 
                       <button
                         type="button"
-                        ={() => setOrientation("sideways")}
+                        onClick={() => setOrientation("sideways")}
                         className={`rounded-2xl border p-3 text-left ${
                           orientation === "sideways"
                             ? "border-emerald-600 bg-emerald-50"
                             : "border-neutral-200 bg-white"
-                        }`}
-                      >
+                         }`}
+                        >
+
                         <div className="text-sm font-semibold">Sideways</div>
                         <div className="text-xs text-neutral-600">20&quot; deep</div>
                       </button>
@@ -849,7 +850,7 @@ function BuilderApp() {
                           <div className="font-semibold leading-tight">{it.title}</div>
                           <div className="mt-1 text-xs text-neutral-500">
                             {it.meta.wallWidthIn}" wide • {it.meta.wallHeightIn}" high •{" "}
-                            {it.meta.autoCols} across • qty {it.meta.qty} •{" "}
+                            {it.meta.cols} across • {it.meta.rows} tall • {it.meta.totalBays} bays
                             {it.meta.toteType === "custom" ? "Custom tote" : "HDX 27-gal"} •{" "}
                             {it.meta.orientation === "standard"
                               ? 'Standard (30")'
