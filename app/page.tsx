@@ -529,7 +529,12 @@ function BuilderApp() {
               <Badge className="rounded-xl" variant="secondary">
                 Est. {money(step === "build" ? estTotal : quoteEstTotal)}
               </Badge>
-              <Button size="icon" variant="outline" ={() => setStep("quote")} aria-label="Open quote">
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => setStep("quote")}
+                aria-label="Open quote"
+              >
                 <ShoppingCart className="h-4 w-4" />
               </Button>
             </div>
