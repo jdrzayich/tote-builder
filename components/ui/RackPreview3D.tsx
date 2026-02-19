@@ -222,7 +222,7 @@ export default function RackPreview3D({ cols, rows, className }: Props) {
         <div className="h-[260px] w-full">
           <Canvas
             shadows
-            camera={{ position: [0, 0.6, 6.2], fov: 40 }}
+            camera={{ position: [0, 1.2, 9.5], fov: 45 }}
             gl={{ antialias: true, alpha: false }}
           >
             {/* Background */}
@@ -260,8 +260,10 @@ export default function RackPreview3D({ cols, rows, className }: Props) {
             <OrbitControls
               enablePan={false}
               enableZoom={false}
+              minDistance={5.5}
+              maxDistance={13}
               rotateSpeed={0.7}
-              minPolarAngle={Math.PI / 2.8}
+              minPolarAngle={Math.PI / 2.05}
               maxPolarAngle={Math.PI / 1.8}
               minAzimuthAngle={-Math.PI / 2.5}
               maxAzimuthAngle={Math.PI / 2.5}
