@@ -233,17 +233,17 @@ function Preview({
         {/* rack */}
         <g filter="url(#softShadow)">
           {/* outer rack body */}
-          <rect x={x0} y={y0} width={rackW} height={rackH} rx="20" fill="url(#rackMetal)" />
+          <rect x={x0} y={y0} width={rackW} height={rackH} rx="20" fill="url(#rackWood)" />
           {/* rack edge sheen */}
           <rect x={x0} y={y0} width={rackW} height={rackH} rx="20" fill="url(#rackEdge)" opacity="0.9" />
 
           {/* beams (top & bottom) */}
-          <rect x={x0 + 10} y={y0 + 8} width={rackW - 20} height={beamH} rx="6" fill="#0b0d10" opacity="0.55" />
-          <rect x={x0 + 10} y={y0 + rackH - beamH - 8} width={rackW - 20} height={beamH} rx="6" fill="#0b0d10" opacity="0.55" />
+          <rect x={x0 + 10} y={y0 + 8} width={rackW - 20} height={beamH} rx="6" fill="#8b5a2b" />
+          <rect x={x0 + 10} y={y0 + rackH - beamH - 8} width={rackW - 20} height={beamH} rx="6" fill="#8b5a2b" />
 
           {/* side posts */}
-          <rect x={x0 + 10} y={y0 + 10} width={postW} height={rackH - 20} rx="6" fill="#0b0d10" opacity="0.55" />
-          <rect x={x0 + rackW - postW - 10} y={y0 + 10} width={postW} height={rackH - 20} rx="6" fill="#0b0d10" opacity="0.55" />
+          <rect x={x0 + 10} y={y0 + 10} width={postW} height={rackH - 20} rx="6" fill="#8b5a2b" />
+          <rect x={x0 + rackW - postW - 10} y={y0 + 10} width={postW} height={rackH - 20} rx="6" fill="#8b5a2b" />
 
           {/* shelves (one per row, under each row of totes) */}
           {Array.from({ length: rows }).map((_, r) => {
