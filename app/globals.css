@@ -5,11 +5,11 @@
 :root {
   color-scheme: light;
 
-  /* Rack Your Garage brand colors */
-  --primary: 18 43 78;        /* dark navy */
-  --primary-foreground: 255 255 255;
-  --accent: 252 108 3;        /* orange */
-  --muted: 112 147 169;       /* blue-gray */
+  /* Rack Your Garage */
+  --ryg-navy: 18 43 78;
+  --ryg-white: 255 255 255;
+  --ryg-slate: 112 147 169;
+  --ryg-orange: 252 108 3;
 }
 
 html, body {
