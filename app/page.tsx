@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
+import RackPreview3D from "@/components/RackPreview3D";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
@@ -806,7 +807,7 @@ function BuilderApp() {
 
                   <Separator />
 
-                    <Preview wallWidthIn={wallWidthIn} cols={selectedCols} rows={selectedRows} />
+                    <RackPreview3D cols={selectedCols} rows={selectedRows} />
 
                   <div className="mt-2 text-center text-sm text-neutral-600">
                     Approx. {rackDimensions.width}" W × {rackDimensions.height}" H
