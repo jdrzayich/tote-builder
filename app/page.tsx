@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import RackPreview3D from "@/components/RackPreview3D";
+import RackPreview3D from "@/components/ui/RackPreview3D";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
