@@ -183,31 +183,22 @@ function Rack({ cols, rows }: Props) {
       {/* ====== RAILS + TOTES PER BAY ====== */}
       {Array.from({ length: rows }).map((_, r) => {
         return Array.from({ length: cols }).map((__, c) => {
-          // bay center
-          const bayLeftX = startX + post + c * bayW;
-          const bayRightX = bayLeftX + bayW;
-          const bayCenterX = bayLeftX + bayW / 2;
-          const bayBottomY = startY + post + r * bayH;
-          const bayCenterY = bayBottomY + bayH / 2;
-
           // bay bounds
           const bayLeftX = startX + post + c * bayW;
           const bayRightX = bayLeftX + bayW;
           const bayCenterX = bayLeftX + bayW / 2;
+
           const bayBottomY = startY + post + r * bayH;
 
-          // rail X positions (these were missing in your code)
+          // rail X positions
           const leftRailX = bayLeftX + railW / 2;
           const rightRailX = bayRightX - railW / 2;
 
-          // ---- rail height: pick a fixed height inside the bay
-          // (this keeps your rails in a consistent spot and avoids circular math)
+          // rail height (fixed within bay so no circular math)
           const railY = bayBottomY + bayH * 0.72;
-
-          // top of the rail
           const railTopY = railY + railH / 2;
 
-          // lid sits on rail top (lip rests on rails)
+          // lid sits on rail top
           const lidH = 0.08;
           const lipSink = 0.01;
           const lidCenterY = (railTopY - lipSink) + lidH / 2;
