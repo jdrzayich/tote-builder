@@ -38,9 +38,6 @@ function Rack({ cols, rows }: Props) {
   const rackOuterH = totalH + post * 2;      // full height including top/bottom
   const halfDepth = depth / 2;
 
-  const zFront = depth / 2 - post / 2;
-  const zBack = -depth / 2 + post / 2;
-
   // put the "front" and "back" posts just inside the depth edges
   const zFront = +halfDepth - post / 2;
   const zBack  = -halfDepth + post / 2;
