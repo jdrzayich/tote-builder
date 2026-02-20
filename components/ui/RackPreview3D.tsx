@@ -33,6 +33,19 @@ function Rack({ cols, rows }: Props) {
   const toteH = bayH * 0.70;
   const toteD = depth * 0.82;
 
+  // FRAME DIMENSIONS (in your Rack() function, near totalW/totalH/startX/startY)
+  const rackOuterW = totalW + post * 2;      // full width including side posts
+  const rackOuterH = totalH + post * 2;      // full height including top/bottom
+  const halfDepth = depth / 2;
+
+  // put the "front" and "back" posts just inside the depth edges
+  const zFront = +halfDepth - post / 2;
+  const zBack  = -halfDepth + post / 2;
+
+  // y positions for top/bottom rails
+  const yBottomRail = startY - post / 2;
+  const yTopRail    = startY + rackOuterH - post / 2;
+
   // Overall rack size
   const rackW = cols * bayW + post * 2;   // outer posts
   const rackH = rows * bayH + post * 2;
@@ -78,6 +91,46 @@ function Rack({ cols, rows }: Props) {
 
   return (
     <group>
+      {/* FRONT + BACK bottom rails */}
+      <mesh position={[startX + rackOuterW / 2, yBottomRail, zFront]} castShadow receiveShadow>
+        <boxGeometry args={[rackOuterW, post, post]} />
+        <meshStandardMaterial {...woodMat} />
+      </mesh>
+      <mesh position={[startX + rackOuterW / 2, yBottomRail, zBack]} castShadow receiveShadow>
+        <boxGeometry args={[rackOuterW, post, post]} />
+        <meshStandardMaterial {...woodMat} />
+      </mesh>
+
+      {/* VERTICAL POSTS at every bay divider (0..cols), FRONT + BACK */}
+      {Array.from({ length: cols + 1 }).map((_, i) => {
+        const x = startX + post / 2 + i * bayW;     // divider x position
+        const y = startY + rackOuterH / 2 - post / 2; // center of vertical post
+        return (
+          <React.Fragment key={`vp-${i}`}>
+            {/* front post */}
+            <mesh position={[x, y, zFront]} castShadow receiveShadow>
+              <boxGeometry args={[post, rackOuterH, post]} />
+              <meshStandardMaterial {...woodMat} />
+            </mesh>
+
+      {/* back post */}
+      <mesh position={[x, y, zBack]} castShadow receiveShadow>
+        <boxGeometry args={[post, rackOuterH, post]} />
+        <meshStandardMaterial {...woodMat} />
+      </mesh>
+    </React.Fragment>
+  );
+})}
+
+{/* FRONT + BACK top rails */}
+<mesh position={[startX + rackOuterW / 2, yTopRail, zFront]} castShadow receiveShadow>
+  <boxGeometry args={[rackOuterW, post, post]} />
+  <meshStandardMaterial {...woodMat} />
+</mesh>
+<mesh position={[startX + rackOuterW / 2, yTopRail, zBack]} castShadow receiveShadow>
+  <boxGeometry args={[rackOuterW, post, post]} />
+  <meshStandardMaterial {...woodMat} />
+</mesh>
       {/* ====== OUTER FRAME (4 corner posts) ====== */}
       {[
         [startX + post / 2, startY + rackH / 2, 0],
