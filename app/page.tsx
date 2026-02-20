@@ -778,10 +778,10 @@ function BuilderApp() {
         <div className="flex items-center gap-2">
           <Checkbox
             checked={addons[a.id] ?? false}
-            onCheckedChange={(checked) =>
-            setAddons((prev) => ({
-              ...prev,
-              [a.id]: checked === true, // converts "indeterminate" to false
+            onChange={(checked) =>
+              setAddons((prev) => ({
+                ...prev,
+              [a.id]: checked,
             }))
           }
         />
