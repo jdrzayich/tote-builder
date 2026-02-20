@@ -33,6 +33,7 @@ const ADDONS = [
   { id: "delivery", name: "Include Delivery" },
   { id: "totes", name: "Include Totes" },
   { id: "wheels", name: "Include Wheels" },
+  { id: "plywoodTop", name: "Include Plywood Top" },
 ];
 
 
@@ -42,6 +43,7 @@ const ADDON_PRICES = {
   delivery: 75,      // flat per rack
   wheels: 75,        // flat per rack
   totesPerBay: 12,   // per bay (this is the key change)
+  plywoodTop: 50,
 } as const;
 
 const TOTES = {
@@ -342,6 +344,7 @@ function BuilderApp() {
   delivery: true,  // default on/off — your choice
   totes: false,
   wheels: false,
+  plywoodTop: false,
 });
 
   const [contact, setContact] = useState({ first: "", last: "", email: "", phone: "", zip: "" });
@@ -432,8 +435,10 @@ function BuilderApp() {
   // totes is priced per bay
   if (addons.totes) total += totalBays * ADDON_PRICES.totesPerBay;
 
+  if (addons.plywoodTop) total += ADDON_PRICES.plywoodTop;
+
   return total;
-}, [addons.delivery, addons.wheels, addons.totes, totalBays]);
+}, [addons.delivery, addons.wheels, addons.totes, addon.plywoodTop, totalBays]);
 
   const estTotal = useMemo(() => {
   const base = totalBays * PRICE_PER_BAY;
@@ -773,7 +778,7 @@ function BuilderApp() {
         <div className="flex items-center gap-2">
           <Checkbox
             checked={!!addons[a.id]}
-            onChange={(v) => setAddons((prev) => ({ ...prev, [a.id]: v }))}
+            onCheckedChange={(v) => setAddons((prev) => ({ ...prev, [a.id]: Boolean(v) }))}
           />
           <div className="text-sm">{a.name}</div>
         </div>
@@ -807,7 +812,13 @@ function BuilderApp() {
 
                   <Separator />
 
-                    <RackPreview3D cols={selectedCols} rows={selectedRows} />
+                    <RackPreview3D 
+                      cols={selectedCols} 
+                      rows={selectedRows} 
+                      includePlywoodTop={addons.plywoodTop}
+                      includewheels={addons.wheels}
+                      include totes={addons.totes} 
+                    />
 
                   <div className="mt-2 text-center text-sm text-neutral-600">
                     Approx. {rackDimensions.width}" W × {rackDimensions.height}" H
