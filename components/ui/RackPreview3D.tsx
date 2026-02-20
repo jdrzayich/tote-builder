@@ -152,6 +152,17 @@ function Rack({ cols, rows }: Props) {
   <meshStandardMaterial {...woodMat} />
 </mesh>
 
+{/* LEFT + RIGHT top rails (front-to-back) */}
+<mesh position={[startX + post / 2, yTopRail, 0]} castShadow receiveShadow>
+  <boxGeometry args={[post, post, depth]} />
+  <meshStandardMaterial {...woodMat} />
+</mesh>
+
+<mesh position={[startX + rackOuterW - post / 2, yTopRail, 0]} castShadow receiveShadow>
+  <boxGeometry args={[post, post, depth]} />
+  <meshStandardMaterial {...woodMat} />
+</mesh>
+
 {/* LEFT + RIGHT bottom rails (front-to-back) */}
 <mesh position={[startX + post / 2, yBottomRail, 0]} castShadow receiveShadow>
   <boxGeometry args={[post, post, depth]} />
