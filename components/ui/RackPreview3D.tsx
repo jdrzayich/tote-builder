@@ -27,7 +27,7 @@ type Props = {
  * - TWO rails per tote bay (left + right), running front-to-back
  * - Totes sitting on those rails
  */
-function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: RackProps) {
+function Rack({ cols, rows, includeTotes, , includePlywoodTop }: RackProps) {
   // --- “real-ish” proportions (tweak these later)
   const bayW = 1.25;          // width allocated per tote bay (left-right)
   const bayH = 0.85;          // height per row
@@ -148,7 +148,7 @@ function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: Ra
         receiveShadow
       >
         <cylinderGeometry args={[0.12, 0.12, 0.06, 24]} />
-        <meshStandardMaterial color="#222222" roughness={0.8} metalness={0.1} />
+        <meshStandardMaterial color="#B00020" roughness={0.7} metalness={0.2} />
       </mesh>
     ))}
   </group>
