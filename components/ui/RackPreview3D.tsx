@@ -139,8 +139,8 @@ function Rack({ cols, rows }: Props) {
         return (
           <group key={`post-pair-${i}`}>
             {/* front post */}
-            <mesh position={[x, startY + rackH / 2, zFront]} castShadow receiveShadow>
-            <boxGeometry args={[post, rackH, post]} />
+            <mesh position={[x, startY + rackOuterH / 2, zFront]} castShadow receiveShadow>
+            <boxGeometry args={[post, rackOuterH, post]} />
             <meshStandardMaterial {...woodMat} />
           </mesh>
 
