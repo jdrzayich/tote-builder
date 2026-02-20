@@ -103,18 +103,19 @@ function Rack({ cols, rows }: Props) {
 
       {/* VERTICAL POSTS at every bay divider (0..cols), FRONT + BACK */}
       {Array.from({ length: cols + 1 }).map((_, i) => {
-        const x = startX + post / 2 + i * bayW;          // divider x position
-        const y = startY + rackOuterH / 2;               // vertical center
+        const xPos = startX + post / 2 + i * bayW; // divider x position
+        const yPos = startY + rackOuterH / 2;      // vertical center
+
         return (
           <group key={`vp-${i}`}>
             {/* front post */}
-            <mesh position={[x, y, zFront]} castShadow receiveShadow>
+            <mesh position={[xPos, yPos, zFront]} castShadow receiveShadow>
               <boxGeometry args={[post, rackOuterH, post]} />
               <meshStandardMaterial {...woodMat} />
             </mesh>
 
             {/* back post */}
-            <mesh position={[x, y, zBack]} castShadow receiveShadow>
+            <mesh position={[xPos, yPos, zBack]} castShadow receiveShadow>
               <boxGeometry args={[post, rackOuterH, post]} />
               <meshStandardMaterial {...woodMat} />
             </mesh>
