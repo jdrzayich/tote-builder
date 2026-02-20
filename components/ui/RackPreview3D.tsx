@@ -228,11 +228,11 @@ function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: Ra
 
               {includeTotes && (
                 <>
-                  {/* Tote body */}
-                  <mesh position={[bayCenterX, toteY, 0]} castShadow receiveShadow>
-                    <boxGeometry args={[toteW, toteH, toteD]} />
-                    <meshStandardMaterial {...toteMat} />
-                  </mesh>
+                 {/* Tote body */}
+                    <mesh position={[bayCenterX, toteY, 0]} castShadow receiveShadow>
+                      <boxGeometry args={[toteW, toteH, toteD]} />
+                      <meshStandardMaterial {...toteMat} />
+                    </mesh>
 
                   {/* Tote lid */}
                   <mesh position={[bayCenterX, lidCenterY, 0]} castShadow receiveShadow>
