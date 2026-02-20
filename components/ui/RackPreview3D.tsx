@@ -27,7 +27,7 @@ type Props = {
  * - TWO rails per tote bay (left + right), running front-to-back
  * - Totes sitting on those rails
  */
-function Rack({ cols, rows, includeTotes, , includeWheels, includePlywoodTop }: RackProps) {
+function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: RackProps) {
   // --- “real-ish” proportions (tweak these later)
   const bayW = 1.25;          // width allocated per tote bay (left-right)
   const bayH = 0.85;          // height per row
