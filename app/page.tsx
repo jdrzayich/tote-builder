@@ -777,11 +777,14 @@ function BuilderApp() {
       <div key={a.id} className="flex items-center justify-between rounded-2xl border border-neutral-200 p-3">
         <div className="flex items-center gap-2">
           <Checkbox
-            checked={!!addons[a.id]}
-            onChange={(e: any) =>
-              setAddons((prev) => ({ ...prev, [a.id]: e.target.checked }))
-            }
-          />
+            checked={addons[a.id] ?? false}
+            onCheckedChange={(checked) =>
+            setAddons((prev) => ({
+              ...prev,
+              [a.id]: checked === true, // converts "indeterminate" to false
+            }))
+          }
+        />
           <div className="text-sm">{a.name}</div>
         </div>
         {a.id === "totes" ? (
