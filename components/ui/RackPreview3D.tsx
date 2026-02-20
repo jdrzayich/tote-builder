@@ -101,6 +101,25 @@ function Rack({ cols, rows }: Props) {
         <meshStandardMaterial {...woodMat} />
       </mesh>
 
+      {/* LEFT + RIGHT bottom rails (front-to-back) */}
+      <mesh
+        position={[startX + post / 2, yBottomRail, 0]}
+        castShadow
+        receiveShadow
+      >
+        <boxGeometry args={[post, post, depth]} />
+        <meshStandardMaterial {...woodMat} />
+    </mesh>
+
+    <mesh
+        position={[startX + rackOuterW - post / 2, yBottomRail, 0]}
+        castShadow
+        receiveShadow
+    >
+        <boxGeometry args={[post, post, depth]} />
+        <meshStandardMaterial {...woodMat} />
+    </mesh>
+
       {/* VERTICAL POSTS at every bay divider (0..cols), FRONT + BACK */}
       {Array.from({ length: cols + 1 }).map((_, i) => {
         const xPos = startX + post / 2 + i * bayW; // divider x position
