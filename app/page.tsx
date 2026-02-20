@@ -818,8 +818,8 @@ function BuilderApp() {
                       cols={selectedCols} 
                       rows={selectedRows} 
                       includePlywoodTop={addons.plywoodTop}
-                      includewheels={addons.wheels}
-                      include totes={addons.totes} 
+                      includeWheels={addons.wheels}
+                      includeTotes={addons.totes} 
                     />
 
                   <div className="mt-2 text-center text-sm text-neutral-600">
