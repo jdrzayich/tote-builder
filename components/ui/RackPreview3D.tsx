@@ -33,29 +33,25 @@ function Rack({ cols, rows }: Props) {
   const toteH = bayH * 0.70;
   const toteD = depth * 0.82;
 
-  // FRAME DIMENSIONS (in your Rack() function, near totalW/totalH/startX/startY)
-  // inner opening width/height (totes area)
-  const totalW = cols * bayW;
-  const totalH = rows * bayH;
-  
-  const rackOuterW = totalW + post * 2;      // full width including side posts
-  const rackOuterH = totalH + post * 2;      // full height including top/bottom
+    // FRAME DIMENSIONS
+  const totalW = cols * bayW;   // inner opening width (totes area)
+  const totalH = rows * bayH;   // inner opening height (totes area)
+
+  const rackOuterW = totalW + post * 2; // full width including side posts
+  const rackOuterH = totalH + post * 2; // full height including top/bottom
   const halfDepth = depth / 2;
+
+  // Rack origin (centered)
+  const startX = -rackOuterW / 2;
+  const startY = -rackOuterH / 2;
 
   // put the "front" and "back" posts just inside the depth edges
   const zFront = +halfDepth - post / 2;
   const zBack  = -halfDepth + post / 2;
 
-  // y positions for top/bottom rails
-  const yBottomRail = startY - post / 2;
+  // y positions for top/bottom frame beams
+  const yBottomRail = startY + post / 2;
   const yTopRail    = startY + rackOuterH - post / 2;
-
-  // Overall rack size
-  const rackW = cols * bayW + post * 2;   // outer posts
-  const rackH = rows * bayH + post * 2;
-
-  const startX = -rackW / 2;
-  const startY = -rackH / 2;
 
   const woodMat = useMemo(
     () => ({
