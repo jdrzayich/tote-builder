@@ -131,6 +131,29 @@ function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: Ra
         <meshStandardMaterial {...woodMat} />
     </mesh>
 
+      {/* WHEELS (optional) */}
+{includeWheels && (
+  <group>
+    {[
+      [startX + post / 2, yBottomRail - post / 2 - 0.12, zFront],
+      [startX + rackOuterW - post / 2, yBottomRail - post / 2 - 0.12, zFront],
+      [startX + post / 2, yBottomRail - post / 2 - 0.12, zBack],
+      [startX + rackOuterW - post / 2, yBottomRail - post / 2 - 0.12, zBack],
+    ].map((p, idx) => (
+      <mesh
+        key={`wheel-${idx}`}
+        position={p as any}
+        rotation={[0, 0, Math.PI / 2]}
+        castShadow
+        receiveShadow
+      >
+        <cylinderGeometry args={[0.12, 0.12, 0.06, 24]} />
+        <meshStandardMaterial color="#222222" roughness={0.8} metalness={0.1} />
+      </mesh>
+    ))}
+  </group>
+)}
+
      {/* VERTICAL POSTS at every bay divider (0..cols), FRONT + BACK */}
 {Array.from({ length: cols + 1 }).map((_, i) => {
   const xPos =
@@ -174,16 +197,17 @@ function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: Ra
   <meshStandardMaterial {...woodMat} />
 </mesh>
 
-{/* LEFT + RIGHT bottom rails (front-to-back) */}
-<mesh position={[startX + post / 2, yBottomRail, 0]} castShadow receiveShadow>
-  <boxGeometry args={[post, post, depth]} />
-  <meshStandardMaterial {...woodMat} />
-</mesh>
-
-<mesh position={[startX + rackOuterW - post / 2, yBottomRail, 0]} castShadow receiveShadow>
-  <boxGeometry args={[post, post, depth]} />
-  <meshStandardMaterial {...woodMat} />
-</mesh>
+{/* PLYWOOD TOP (optional) */}
+{includePlywoodTop && (
+  <mesh
+    position={[0, yTopRail + post / 2 + 0.03, 0]} // sits just above the top frame
+    castShadow
+    receiveShadow
+  >
+    <boxGeometry args={[rackOuterW - post, 0.06, depth - post]} />
+    <meshStandardMaterial color="#D2B48C" roughness={0.9} metalness={0.0} />
+  </mesh>
+)}
       
 
       {/* ====== RAILS + TOTES PER BAY ====== */}
