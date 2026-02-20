@@ -37,11 +37,6 @@ function Rack({ cols, rows }: Props) {
   // inner opening width/height (totes area)
   const totalW = cols * bayW;
   const totalH = rows * bayH;
-
-  // full outside dimensions (including posts)
-  const rackOuterW = totalW + post * 2;
-  const rackOuterH = totalH + post * 2;
-  const halfDepth = depth / 2;
   
   const rackOuterW = totalW + post * 2;      // full width including side posts
   const rackOuterH = totalH + post * 2;      // full height including top/bottom
