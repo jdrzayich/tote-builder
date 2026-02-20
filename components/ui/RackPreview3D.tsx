@@ -4,9 +4,19 @@ import React, { useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
+type RackProps = {
+  cols: number;
+  rows: number;
+  includeTotes?: boolean;
+  includeWheels?: boolean;
+  includePlywoodTop?: boolean;
+};
+
 type Props = {
   cols: number;
   rows: number;
+  includeTotes?: boolean;
+  includeWheels?: boolean;
   includePlywoodTop?: boolean;
 };
 
@@ -17,7 +27,7 @@ type Props = {
  * - TWO rails per tote bay (left + right), running front-to-back
  * - Totes sitting on those rails
  */
-function Rack({ cols, rows }: Props) {
+function Rack({ cols, rows, includeTotes, includeWheels, includePlywoodTop }: RackProps) {
   // --- “real-ish” proportions (tweak these later)
   const bayW = 1.25;          // width allocated per tote bay (left-right)
   const bayH = 0.85;          // height per row
@@ -216,17 +226,21 @@ function Rack({ cols, rows }: Props) {
                 <meshStandardMaterial {...railMat} />
               </mesh>
 
-              {/* Tote body */}
-              <mesh position={[bayCenterX, toteY, 0]} castShadow receiveShadow>
-                <boxGeometry args={[toteW, toteH, toteD]} />
-                <meshStandardMaterial {...toteMat} />
-              </mesh>
+              {includeTotes && (
+                <>
+                  {/* Tote body */}
+                  <mesh position={[bayCenterX, toteY, 0]} castShadow receiveShadow>
+                    <boxGeometry args={[toteW, toteH, toteD]} />
+                    <meshStandardMaterial {...toteMat} />
+                  </mesh>
 
-              {/* Tote lid */}
-              <mesh position={[bayCenterX, lidCenterY, 0]} castShadow receiveShadow>
-                <boxGeometry args={[toteW * 1.02, lidH, toteD * 1.02]} />
-                <meshStandardMaterial {...lidMat} />
-              </mesh>
+                  {/* Tote lid */}
+                  <mesh position={[bayCenterX, lidCenterY, 0]} castShadow receiveShadow>
+                    <boxGeometry args={[toteW * 1.02, lidH, toteD * 1.02]} />
+                    <meshStandardMaterial {...lidMat} />
+                  </mesh>
+                </>
+              )}
             </group>
           );
         });
@@ -235,7 +249,13 @@ function Rack({ cols, rows }: Props) {
   );
 }
 
-export default function RackPreview3D({ cols, rows }: Props) {
+export default function RackPreview3D({
+  cols,
+  rows,
+  includeTotes = false,
+  includeWheels = false,
+  includePlywoodTop = false,
+}: Props) {
   // Auto zoom: scale camera based on rack size
   const camZ = useMemo(() => {
     const biggest = Math.max(cols * 1.25, rows * 0.9);
@@ -264,7 +284,13 @@ export default function RackPreview3D({ cols, rows }: Props) {
             <meshStandardMaterial color="#ffffff" />
           </mesh>
 
-          <Rack cols={cols} rows={rows} />
+          <Rack
+            cols={cols}
+            rows={rows}
+            includeTotes={includeTotes}
+            includeWheels={includeWheels}
+            includePlywoodTop={includePlywoodTop}
+          />
 
           <OrbitControls
             enablePan={false}
