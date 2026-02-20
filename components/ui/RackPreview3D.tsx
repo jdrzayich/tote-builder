@@ -34,6 +34,15 @@ function Rack({ cols, rows }: Props) {
   const toteD = depth * 0.82;
 
   // FRAME DIMENSIONS (in your Rack() function, near totalW/totalH/startX/startY)
+  // inner opening width/height (totes area)
+  const totalW = cols * bayW;
+  const totalH = rows * bayH;
+
+  // full outside dimensions (including posts)
+  const rackOuterW = totalW + post * 2;
+  const rackOuterH = totalH + post * 2;
+  const halfDepth = depth / 2;
+  
   const rackOuterW = totalW + post * 2;      // full width including side posts
   const rackOuterH = totalH + post * 2;      // full height including top/bottom
   const halfDepth = depth / 2;
