@@ -123,33 +123,16 @@ function Rack({ cols, rows }: Props) {
         );
       })}
 
-{/* FRONT + BACK top rails */}
-<mesh position={[startX + rackOuterW / 2, yTopRail, zFront]} castShadow receiveShadow>
-  <boxGeometry args={[rackOuterW, post, post]} />
-  <meshStandardMaterial {...woodMat} />
-</mesh>
-<mesh position={[startX + rackOuterW / 2, yTopRail, zBack]} castShadow receiveShadow>
-  <boxGeometry args={[rackOuterW, post, post]} />
-  <meshStandardMaterial {...woodMat} />
-</mesh>
-     
-
-        return (
-          <group key={`post-pair-${i}`}>
-            {/* front post */}
-            <mesh position={[x, startY + rackOuterH / 2, zFront]} castShadow receiveShadow>
-            <boxGeometry args={[post, rackOuterH, post]} />
+        {/* FRONT + BACK top rails */}
+          <mesh position={[startX + rackOuterW / 2, yTopRail, zFront]} castShadow receiveShadow>
+            <boxGeometry args={[rackOuterW, post, post]} />
             <meshStandardMaterial {...woodMat} />
-          </mesh>
-
-            {/* back post */}
-            <mesh position={[x, startY + rackOuterH / 2, zBack]} castShadow receiveShadow>
-              <boxGeometry args={[post, rackOuterH, post]} />
-              <meshStandardMaterial {...woodMat} />
-            </mesh>
-          </group>
-        );
-      })}      
+        </mesh>
+        <mesh position={[startX + rackOuterW / 2, yTopRail, zBack]} castShadow receiveShadow>
+          <boxGeometry args={[rackOuterW, post, post]} />
+          <meshStandardMaterial {...woodMat} />
+        </mesh>
+     
 
       {/* ====== TOP + BOTTOM BEAMS ====== */}
       {[
