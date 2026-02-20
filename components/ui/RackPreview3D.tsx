@@ -161,7 +161,7 @@ function Rack({ cols, rows }: Props) {
         [0, startY + post / 2, 0],
       ].map((p, i) => (
         <mesh key={`topbot-${i}`} position={p as any} castShadow receiveShadow>
-          <boxGeometry args={[rackW, post, depth]} />
+          <boxGeometry args={[rackOuterW, post, depth]} />
           <meshStandardMaterial {...woodMat} />
         </mesh>
       ))}
@@ -171,11 +171,11 @@ function Rack({ cols, rows }: Props) {
         // left top depth
         [startX + post / 2, startY + rackOuterH - post / 2, 0],
         // right top depth
-        [startX + rackW - post / 2, startY + rackOuterH - post / 2, 0],
+        [startX + rackOuterW - post / 2, startY + rackOuterH - post / 2, 0],
         // left bottom depth
         [startX + post / 2, startY + post / 2, 0],
         // right bottom depth
-        [startX + rackW - post / 2, startY + post / 2, 0],
+        [startX + rackOuterW - post / 2, startY + post / 2, 0],
       ].map((p, i) => (
         <mesh key={`dbeam-${i}`} position={p as any} castShadow receiveShadow>
           <boxGeometry args={[post, post, depth]} />
