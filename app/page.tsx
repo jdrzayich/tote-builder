@@ -778,7 +778,9 @@ function BuilderApp() {
         <div className="flex items-center gap-2">
           <Checkbox
             checked={!!addons[a.id]}
-            onCheckedChange={(v) => setAddons((prev) => ({ ...prev, [a.id]: Boolean(v) }))}
+            onChange={(e: any) =>
+              setAddons((prev) => ({ ...prev, [a.id]: e.target.checked }))
+            }
           />
           <div className="text-sm">{a.name}</div>
         </div>
