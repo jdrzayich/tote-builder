@@ -438,7 +438,7 @@ function BuilderApp() {
   if (addons.plywoodTop) total += ADDON_PRICES.plywoodTop;
 
   return total;
-}, [addons.delivery, addons.wheels, addons.totes, addon.plywoodTop, totalBays]);
+}, [addons.delivery, addons.wheels, addons.totes, addons.plywoodTop, totalBays]);
 
   const estTotal = useMemo(() => {
   const base = totalBays * PRICE_PER_BAY;
