@@ -266,7 +266,7 @@ export default function RackPreview3D({ cols, rows }: Props) {
           />
 
           {/* Ground */}
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -2.0, 0]} receiveShadow>
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -4.0, 0]} receiveShadow>
             <planeGeometry args={[50, 50]} />
             <meshStandardMaterial color="#ffffff" />
           </mesh>
