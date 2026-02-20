@@ -38,6 +38,9 @@ function Rack({ cols, rows }: Props) {
   const rackOuterH = totalH + post * 2;      // full height including top/bottom
   const halfDepth = depth / 2;
 
+  const zFront = depth / 2 - post / 2;
+  const zBack = -depth / 2 + post / 2;
+
   // put the "front" and "back" posts just inside the depth edges
   const zFront = +halfDepth - post / 2;
   const zBack  = -halfDepth + post / 2;
@@ -131,27 +134,27 @@ function Rack({ cols, rows }: Props) {
   <boxGeometry args={[rackOuterW, post, post]} />
   <meshStandardMaterial {...woodMat} />
 </mesh>
-      {/* ====== OUTER FRAME (4 corner posts) ====== */}
-      {[
-        [startX + post / 2, startY + rackH / 2, 0],
-        [startX + rackW - post / 2, startY + rackH / 2, 0],
-      ].map((p, i) => (
-        <mesh key={`sidepost-top-${i}`} position={p as any} castShadow receiveShadow>
-          <boxGeometry args={[post, rackH, depth]} />
-          <meshStandardMaterial {...woodMat} />
-        </mesh>
-      ))}
+      {/* ====== VERTICAL POSTS (front + back) ====== */}
+      {Array.from({ length: cols + 1 }).map((_, i) => {
+          // i=0 left edge, i=cols right edge, in-between are dividers
+        const x = startX + post / 2 + i * bayW;
 
-      {/* ====== INTERNAL VERTICAL POSTS BETWEEN BAYS ====== */}
-      {Array.from({ length: cols - 1 }).map((_, c) => {
-        const x = startX + post + (c + 1) * bayW;
         return (
-          <mesh key={`vpost-${c}`} position={[x, startY + rackH / 2, 0]} castShadow receiveShadow>
-            <boxGeometry args={[post, rackH, depth]} />
+          <group key={`post-pair-${i}`}>
+            {/* front post */}
+            <mesh position={[x, startY + rackH / 2, zFront]} castShadow receiveShadow>
+            <boxGeometry args={[post, rackH, post]} />
             <meshStandardMaterial {...woodMat} />
           </mesh>
+
+            {/* back post */}
+            <mesh position={[x, startY + rackH / 2, zBack]} castShadow receiveShadow>
+              <boxGeometry args={[post, rackH, post]} />
+              <meshStandardMaterial {...woodMat} />
+            </mesh>
+          </group>
         );
-      })}
+      })}      
 
       {/* ====== TOP + BOTTOM BEAMS ====== */}
       {[
@@ -193,10 +196,8 @@ function Rack({ cols, rows }: Props) {
           const bayBottomY = startY + post + r * bayH;
           const bayCenterY = bayBottomY + bayH / 2;
 
-          // Tote vertical position (center)
-          const toteY = bayBottomY + bayH * 0.48;
-
-          // Lid Y (center)
+          const railTopY = railY + railH / 2;
+          const toteY = railTopY + toteH / 2 + 0.002; // tiny epsilon
           const lidY = toteY + toteH / 2 + 0.05;
 
           // Rails should sit right under lid
