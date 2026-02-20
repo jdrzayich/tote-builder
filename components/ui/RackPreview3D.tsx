@@ -145,8 +145,8 @@ function Rack({ cols, rows }: Props) {
           </mesh>
 
             {/* back post */}
-            <mesh position={[x, startY + rackH / 2, zBack]} castShadow receiveShadow>
-              <boxGeometry args={[post, rackH, post]} />
+            <mesh position={[x, startY + rackOuterH / 2, zBack]} castShadow receiveShadow>
+              <boxGeometry args={[post, rackOuterH, post]} />
               <meshStandardMaterial {...woodMat} />
             </mesh>
           </group>
@@ -156,7 +156,7 @@ function Rack({ cols, rows }: Props) {
       {/* ====== TOP + BOTTOM BEAMS ====== */}
       {[
         // top
-        [0, startY + rackH - post / 2, 0],
+        [0, startY + rackOuterH - post / 2, 0],
         // bottom
         [0, startY + post / 2, 0],
       ].map((p, i) => (
@@ -169,9 +169,9 @@ function Rack({ cols, rows }: Props) {
       {/* left/right depth beams (front-to-back) */}
       {[
         // left top depth
-        [startX + post / 2, startY + rackH - post / 2, 0],
+        [startX + post / 2, startY + rackOuterH - post / 2, 0],
         // right top depth
-        [startX + rackW - post / 2, startY + rackH - post / 2, 0],
+        [startX + rackW - post / 2, startY + rackOuterH - post / 2, 0],
         // left bottom depth
         [startX + post / 2, startY + post / 2, 0],
         // right bottom depth
