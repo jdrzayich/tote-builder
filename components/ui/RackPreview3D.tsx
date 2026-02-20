@@ -103,24 +103,24 @@ function Rack({ cols, rows }: Props) {
 
       {/* VERTICAL POSTS at every bay divider (0..cols), FRONT + BACK */}
       {Array.from({ length: cols + 1 }).map((_, i) => {
-        const x = startX + post / 2 + i * bayW;     // divider x position
-        const y = startY + rackOuterH / 2 - post / 2; // center of vertical post
+        const x = startX + post / 2 + i * bayW;          // divider x position
+        const y = startY + rackOuterH / 2;               // vertical center
         return (
-          <React.Fragment key={`vp-${i}`}>
+          <group key={`vp-${i}`}>
             {/* front post */}
             <mesh position={[x, y, zFront]} castShadow receiveShadow>
               <boxGeometry args={[post, rackOuterH, post]} />
               <meshStandardMaterial {...woodMat} />
             </mesh>
 
-      {/* back post */}
-      <mesh position={[x, y, zBack]} castShadow receiveShadow>
-        <boxGeometry args={[post, rackOuterH, post]} />
-        <meshStandardMaterial {...woodMat} />
-      </mesh>
-    </React.Fragment>
-  );
-})}
+            {/* back post */}
+            <mesh position={[x, y, zBack]} castShadow receiveShadow>
+              <boxGeometry args={[post, rackOuterH, post]} />
+              <meshStandardMaterial {...woodMat} />
+            </mesh>
+          </group>
+        );
+      })}
 
 {/* FRONT + BACK top rails */}
 <mesh position={[startX + rackOuterW / 2, yTopRail, zFront]} castShadow receiveShadow>
@@ -131,10 +131,7 @@ function Rack({ cols, rows }: Props) {
   <boxGeometry args={[rackOuterW, post, post]} />
   <meshStandardMaterial {...woodMat} />
 </mesh>
-      {/* ====== VERTICAL POSTS (front + back) ====== */}
-      {Array.from({ length: cols + 1 }).map((_, i) => {
-          // i=0 left edge, i=cols right edge, in-between are dividers
-        const x = startX + post / 2 + i * bayW;
+     
 
         return (
           <group key={`post-pair-${i}`}>
@@ -193,14 +190,30 @@ function Rack({ cols, rows }: Props) {
           const bayBottomY = startY + post + r * bayH;
           const bayCenterY = bayBottomY + bayH / 2;
 
-          const railTopY = railY + railH / 2;
-          const toteY = railTopY + toteH / 2 + 0.002; // tiny epsilon
-          const lidY = toteY + toteH / 2 + 0.05;
+          // bay bounds
+          const bayLeftX = startX + post + c * bayW;
+          const bayRightX = bayLeftX + bayW;
+          const bayCenterX = bayLeftX + bayW / 2;
+          const bayBottomY = startY + post + r * bayH;
 
-          // Rails should sit right under lid
-          const railY = lidY - 0.05 - railH / 2;
+          // rail X positions (these were missing in your code)
           const leftRailX = bayLeftX + railW / 2;
           const rightRailX = bayRightX - railW / 2;
+
+          // ---- rail height: pick a fixed height inside the bay
+          // (this keeps your rails in a consistent spot and avoids circular math)
+          const railY = bayBottomY + bayH * 0.72;
+
+          // top of the rail
+          const railTopY = railY + railH / 2;
+
+          // lid sits on rail top (lip rests on rails)
+          const lidH = 0.08;
+          const lipSink = 0.01;
+          const lidCenterY = (railTopY - lipSink) + lidH / 2;
+
+          // tote hangs below lid
+          const toteY = lidCenterY - lidH / 2 - toteH / 2;
 
           return (
             <group key={`bay-${r}-${c}`}>
@@ -223,8 +236,8 @@ function Rack({ cols, rows }: Props) {
               </mesh>
 
               {/* Tote lid */}
-              <mesh position={[bayCenterX, toteY + toteH / 2 + 0.05, 0]} castShadow receiveShadow>
-                <boxGeometry args={[toteW * 1.02, 0.08, toteD * 1.02]} />
+              <mesh position={[bayCenterX, lidCenterY, 0]} castShadow receiveShadow>
+                <boxGeometry args={[toteW * 1.02, lidH, toteD * 1.02]} />
                 <meshStandardMaterial {...lidMat} />
               </mesh>
             </group>
