@@ -7,6 +7,7 @@ import { OrbitControls } from "@react-three/drei";
 type Props = {
   cols: number;
   rows: number;
+  includePlywoodTop?: boolean;
 };
 
 /**
