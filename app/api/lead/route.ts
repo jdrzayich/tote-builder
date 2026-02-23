@@ -23,6 +23,18 @@ export async function POST(req: Request) {
     const includeWheels = !!body?.includeWheels;
     const includePlywoodTop = !!body?.includePlywoodTop;
 
+    // --- NEW: include the quote items (from your builder)
+    const items = body?.items;
+    const estimate = body?.estimate;
+    const zip = body?.zip;
+    const notes = body?.notes;
+
+    const itemsHtml = Array.isArray(items)
+      ? `<ul>${items
+        .map((it: any) => `<li>${escapeHtml(it?.title ?? "Item")} — Est. ${it?.estTotal ?? ""}</li>`)
+        .join("")}</ul>`
+      : "<p>(no items)</p>";
+
     const { error } = await resend.emails.send({
       from: "Tote Builder <onboarding@resend.dev>",
       to: ["jake@rackyourgarage.com"],
@@ -50,4 +62,12 @@ export async function POST(req: Request) {
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e?.message ?? "Server error" }), { status: 500 });
   }
+}
+function escapeHtml(str: string) {
+  return String(str)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
