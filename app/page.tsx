@@ -613,7 +613,7 @@ function BuilderApp() {
   onChange={(e) => setToteType(e.target.value as "hdx27" | "custom")}
 >
   <option value="hdx27">HDX 27-gallon totes</option>
-  <option value="custom">Custom size / brand</option>
+  <option value="custom">Custom size / brand (please select Manual rack size below)</option>
     </select>
   </div>
 </div>
