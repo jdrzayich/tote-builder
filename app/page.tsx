@@ -348,7 +348,6 @@ function BuilderApp() {
 });
 
   const [contact, setContact] = useState({ first: "", last: "", email: "", phone: "", zip: "" });
-  const [preferredDate, setPreferredDate] = useState<string>("");
   const [notes, setNotes] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
 
@@ -476,48 +475,59 @@ function BuilderApp() {
     setQuoteItems((prev) => prev.filter((x) => x.id !== id));
   }
 
-  async function submitQuoteRequest() {
-    if (!contact.first || !contact.last || !contact.email || !contact.phone || !contact.zip) {
-      toast({ title: "Missing info", description: "Please add name, email, phone, and ZIP." });
-      return;
-    }
-    if (quoteItems.length === 0) {
-      toast({ title: "No items", description: "Add at least one configuration to your quote." });
-      return;
-    }
-
-    setSubmitting(true);
-    try {
-      const payload = {
-        source: "tote-builder-v1",
-        createdAt: new Date().toISOString(),
-        contact,
-        preferredDate: preferredDate || null,
-        notes,
-        estimate: quoteEstTotal,
-        items: quoteItems,
-      };
-
-      const webhook = process.env.NEXT_PUBLIC_QUOTE_WEBHOOK_URL;
-
-      if (webhook) {
-        const res = await fetch(webhook, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error(`Webhook error ${res.status}`);
-      } else {
-        console.log("QUOTE_REQUEST_PAYLOAD", payload);
-      }
-
-      toast({ title: "Request sent", description: "We got it. We'll follow up with a custom quote." });
-    } catch (e: any) {
-      toast({ title: "Submit failed", description: e?.message || "Please try again." });
-    } finally {
-      setSubmitting(false);
-    }
+ async function submitQuoteRequest() {
+  // Validate required fields
+  if (!contact.first || !contact.last || !contact.email || !contact.phone || !contact.zip) {
+    toast({ title: "Missing info", description: "Please add name, email, phone, and ZIP." });
+    return;
   }
+  if (quoteItems.length === 0) {
+    toast({ title: "No items", description: "Add at least one configuration to your quote." });
+    return;
+  }
+
+  setSubmitting(true);
+  try {
+    const payload = {
+      // The API route requires name/email/phone at minimum
+      name: `${contact.first} ${contact.last}`.trim(),
+      email: contact.email,
+      phone: contact.phone,
+
+      // Helpful context for you
+      zip: contact.zip,
+      notes,
+      estimate: quoteEstTotal,
+      items: quoteItems,
+      source: "tote-builder-v1",
+      createdAt: new Date().toISOString(),
+    };
+
+    const res = await fetch("/api/lead", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      throw new Error(data?.error || "Submission failed");
+    }
+
+    toast({ title: "Request sent", description: "We got it. We'll follow up with a custom quote." });
+
+    // Optional: clear form after success
+    // setContact({ first: "", last: "", email: "", phone: "", zip: "" });
+    // setNotes("");
+    // setQuoteItems([]);
+    // setStep("build");
+  } catch (e: any) {
+    toast({ title: "Submit failed", description: e?.message || "Please try again." });
+  } finally {
+    setSubmitting(false);
+  }
+}
 
   return (
     <div className="min-h-screen">
@@ -972,10 +982,7 @@ function BuilderApp() {
                     {submitting ? "Sending..." : "Request Quote"} <ArrowRight className="h-4 w-4" />
                   </Button>
 
-                  <div className="text-xs text-neutral-500">
-                    To connect submissions, set{" "}
-                    <span className="font-mono">NEXT_PUBLIC_QUOTE_WEBHOOK_URL</span> in Vercel → Settings → Environment Variables.
-                  </div>
+                  
                 </CardContent>
               </Card>
 
