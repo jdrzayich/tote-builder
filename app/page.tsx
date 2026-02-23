@@ -959,14 +959,6 @@ function BuilderApp() {
                   <Separator />
 
                   <div className="space-y-2">
-                    <Label className="flex items-center gap-2">
-                      <CalendarDays className="h-4 w-4" /> Preferred install date (optional)
-                    </Label>
-                    <Input type="date" value={preferredDate} onChange={(e) => setPreferredDate(e.target.value)} />
-                    <div className="text-xs text-neutral-500">We’ll confirm availability after we review your garage.</div>
-                  </div>
-
-                  <div className="space-y-2">
                     <Label>Notes (optional)</Label>
                     <textarea
                       value={notes}
