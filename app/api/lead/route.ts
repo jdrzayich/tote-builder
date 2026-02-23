@@ -30,10 +30,22 @@ export async function POST(req: Request) {
     const notes = body?.notes;
 
     const itemsHtml = Array.isArray(items)
-      ? `<ul>${items
-        .map((it: any) => `<li>${escapeHtml(it?.title ?? "Item")} — Est. ${it?.estTotal ?? ""}</li>`)
-        .join("")}</ul>`
-      : "<p>(no items)</p>";
+      ? `<ol>${items
+        .map((it: any) => {
+          const meta = it?.meta || {};
+          const addons = Array.isArray(meta?.addons) ? meta.addons : [];
+          return `
+            <li>
+              <div><b>${escapeHtml(it?.title ?? "Item")}</b> — Est. ${it?.estTotal ?? ""}</div>
+              <div>Size: ${meta?.cols ?? "?"} across × ${meta?.rows ?? "?"} tall (${meta?.totalBays ?? "?"} bays)</div>
+              ${addons.length ? `<div>Add-ons: ${escapeHtml(addons.join(", "))}</div>` : `<div>Add-ons: (none)</div>`}
+              <div>Wall: ${meta?.wallWidthIn ?? "?"}" W × ${meta?.wallHeightIn ?? "?"}" H</div>
+              <div>Tote: ${escapeHtml(meta?.toteType ?? "")} • ${escapeHtml(meta?.orientation ?? "")}</div>
+            </li>
+          `;
+       })
+      .join("")}</ol>`
+  : "<p>(no items)</p>";
 
     const { error } = await resend.emails.send({
       from: "Tote Builder <onboarding@resend.dev>",
@@ -45,12 +57,14 @@ export async function POST(req: Request) {
         <p><b>Name:</b> ${name}</p>
         <p><b>Email:</b> ${email}</p>
         <p><b>Phone:</b> ${phone}</p>
+        ${zip ? `<p><b>ZIP:</b> ${escapeHtml(zip)}</p>` : ""}
+        ${estimate != null ? `<p><b>Estimated total:</b> ${estimate}</p>` : ""}
+
         <hr/>
-        <h3>Build</h3>
-        <p><b>Rows:</b> ${rows ?? "(not provided)"}</p>
-        <p><b>Cols:</b> ${cols ?? "(not provided)"}</p>
-        <p><b>Wheels:</b> ${includeWheels ? "Yes" : "No"}</p>
-        <p><b>Plywood Top:</b> ${includePlywoodTop ? "Yes" : "No"}</p>
+        <h3>Quote Items</h3>
+        ${itemsHtml}
+
+        ${notes ? `<hr/><p><b>Notes:</b><br/>${escapeHtml(notes)}</p>` : ""}
       `,
     });
 
